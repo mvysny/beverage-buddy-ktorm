@@ -30,28 +30,5 @@ interface Category : ValidatableEntity<Category> {
         fun findByName(name: String): Category? = db { database.categories.singleOrNull { it.name eq name } }
         fun getByName(name: String): Category = db { database.categories.single { it.name eq name } }
         fun existsWithName(name: String): Boolean = db { database.categories.any { it.name eq name } }
-        // @TODO finalize
-/*
-        fun deleteAll() {
-            db {
-                handle.createUpdate("update Review set category = NULL").execute()
-                super.deleteAll()
-            }
-        }
-*/
     }
-
-    // @todo finalize
-/*
-    override fun delete(): Int {
-        db {
-            if (id != null) {
-                handle.createUpdate("update Review set category = NULL where category=:catId")
-                        .bind("catId", id!!)
-                        .execute()
-            }
-            return super.delete()
-        }
-    }
-*/
 }
