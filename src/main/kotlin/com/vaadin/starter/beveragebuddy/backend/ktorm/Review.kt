@@ -1,7 +1,9 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
 import jakarta.validation.constraints.*
+import org.ktorm.database.Database
 import org.ktorm.entity.Entity
+import org.ktorm.entity.sequenceOf
 import org.ktorm.schema.*
 import java.time.LocalDate
 
@@ -12,7 +14,7 @@ object Reviews : Table<Review>("review") {
     val category = long("category").bindTo { it.category }
     val count = int("count").bindTo { it.count }
 }
-
+val Database.reviews get() = this.sequenceOf(Reviews)
 
 /**
  * Represents a beverage review.
