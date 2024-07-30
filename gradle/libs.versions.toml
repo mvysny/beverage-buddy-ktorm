@@ -21,6 +21,7 @@ dynatest = "com.github.mvysny.dynatest:dynatest:0.25"
 vok-db = { module = "eu.vaadinonkotlin:vok-framework-vokdb", version.ref = "vok" }
 vok-rest-server = { module = "eu.vaadinonkotlin:vok-rest", version.ref = "vok" }
 vok-rest-client = { module = "eu.vaadinonkotlin:vok-rest-client", version.ref = "vok" }
+ktorm = "org.ktorm:ktorm-core:4.1.0"
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }

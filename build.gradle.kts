@@ -34,10 +34,11 @@ dependencies {
             exclude(module = "vaadin-dev")
         }
     }
-    implementation(libs.vok.db)
     implementation(libs.karibu.dsl)
     implementation(libs.vaadin.boot)
 
+    implementation(libs.vok.db)
+    implementation(libs.ktorm)
     implementation(libs.hikaricp)
 
     // logging
