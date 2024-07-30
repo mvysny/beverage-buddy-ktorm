@@ -1,10 +1,7 @@
-[![Powered By Vaadin on Kotlin](http://vaadinonkotlin.eu/iconography/vok_badge.svg)](http://vaadinonkotlin.eu)
-[![Join the chat at https://gitter.im/vaadin/vaadin-on-kotlin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/vaadin-on-kotlin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 # Beverage Buddy App Starter for Vaadin
 :coffee::tea::sake::baby_bottle::beer::cocktail::tropical_drink::wine_glass:
 
-This is a [Vaadin-on-Kotlin](http://vaadinonkotlin.eu) example application,
+This is a [Vaadin](https://vaadin.com/)+[Kotlin](https://kotlinlang.org/)+[Ktorm](https://www.ktorm.org/) example application,
 used to demonstrate features of the Vaadin Flow Java framework.
 A full-stack app: uses the H2 database instead of a dummy service. Requires Java 17+.
 
@@ -21,7 +18,7 @@ This version of Beverage Buddy demoes the possibility of developing a Vaadin
 web application purely server-side in the Kotlin language. There is no
 JavaScript code in this project. We use Vaadin to avoid touching JavaScript after all.
 
-See the [online demo](https://v-herd.eu/beverage-buddy-vok/).
+See the [online demo](https://v-herd.eu/beverage-buddy-ktorm/).
 
 # Documentation
 
@@ -31,7 +28,7 @@ on how you run, develop and package this Vaadin-Boot-based app.
 ## Database
 
 Without the database, we could store the categories and reviews into session only, which would then be gone when the server rebooted.
-We will use the [Vaadin-on-Kotlin](http://vaadinonkotlin.eu/)'s SQL database support. To make things easy we'll
+We will use the [Ktorm](https://www.ktorm.org/)'s SQL database support. To make things easy we'll
 use in-memory H2 database which will be gone when the server is rebooted - *touche* :-D
 
 We will use [Flyway](https://flywaydb.org/) for database migration. Check out [Bootstrap.kt](src/main/kotlin/com/vaadin/starter/beveragebuddy/Bootstrap.kt)
@@ -46,5 +43,5 @@ Grid configuration for details.
 
 ## JOOQ
 
-For a JOOQ version of this app, please see [beverage-buddy-jooq](https://github.com/mvysny/beverage-buddy-jooq).
-
+* For a JOOQ version of this app, please see [beverage-buddy-jooq](https://github.com/mvysny/beverage-buddy-jooq).
+* For a vok-orm version of this app, please see [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok).
