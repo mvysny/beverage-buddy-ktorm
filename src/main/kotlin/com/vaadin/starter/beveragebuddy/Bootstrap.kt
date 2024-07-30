@@ -2,7 +2,6 @@ package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
 import com.gitlab.mvysny.jdbiorm.JdbiOrm
-import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.page.AppShellConfigurator
@@ -14,14 +13,18 @@ import com.vaadin.flow.server.VaadinSession
 import com.vaadin.flow.theme.Theme
 import eu.vaadinonkotlin.VaadinOnKotlin
 import com.vaadin.starter.beveragebuddy.backend.DemoData
+import com.vaadin.starter.beveragebuddy.backend.ktorm.SimpleKtorm
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import eu.vaadinonkotlin.closeQuietly
 import org.flywaydb.core.Flyway
 import org.h2.Driver
 import org.slf4j.LoggerFactory
 import jakarta.servlet.ServletContextEvent
 import jakarta.servlet.ServletContextListener
 import jakarta.servlet.annotation.WebListener
+import org.ktorm.database.Database
+import javax.sql.DataSource
 
 /**
  * Boots the app:
@@ -46,7 +49,9 @@ class Bootstrap: ServletContextListener {
             username = "sa"
             password = ""
         }
-        JdbiOrm.setDataSource(HikariDataSource(cfg))
+        dataSource = HikariDataSource(cfg)
+        JdbiOrm.setDataSource(dataSource)
+        SimpleKtorm.database = Database.Companion.connect(dataSource)
 
         // Initializes the VoK framework
         log.info("Initializing VaadinOnKotlin")
@@ -70,12 +75,14 @@ class Bootstrap: ServletContextListener {
         log.info("Destroying VaadinOnKotlin")
         VaadinOnKotlin.destroy()
         log.info("Closing database connections")
-        JdbiOrm.destroy()
+        dataSource.close()
         log.info("Shutdown complete")
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(Bootstrap::class.java)
+        @Volatile
+        private lateinit var dataSource: HikariDataSource
     }
 }
 
