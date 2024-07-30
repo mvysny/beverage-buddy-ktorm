@@ -3,6 +3,7 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.fatboyindustrial.gsonjavatime.Converters
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.vaadin.starter.beveragebuddy.backend.ktorm.categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.db
 import jakarta.servlet.annotation.WebServlet
 import jakarta.servlet.http.HttpServlet
@@ -16,6 +17,7 @@ import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.servlet.jakarta.Http4kJakartaServletAdapter
+import org.ktorm.entity.toList
 
 object RestService {
     val gson: Gson = GsonBuilder().registerJavaTimeAdapters().create()
@@ -25,7 +27,7 @@ object RestService {
             .body(gson.toJsonAsync(obj))
 
     val app: RoutingHttpHandler = routes(
-        "categories" bind GET to { Response(OK).json(db { CATEGORY.dao.findAll() }) }
+        "categories" bind GET to { Response(OK).json(db { database.categories.toList() }) }
     )
 }
 

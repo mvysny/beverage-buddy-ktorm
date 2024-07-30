@@ -1,70 +1,78 @@
 package com.vaadin.starter.beveragebuddy.backend
 
-import com.github.mvysny.dynatest.*
+import com.github.mvysny.dynatest.DynaTest
+import com.github.mvysny.dynatest.expectList
+import com.github.mvysny.dynatest.expectThrows
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Category.Companion
+import com.vaadin.starter.beveragebuddy.backend.ktorm.create
 import com.vaadin.starter.beveragebuddy.ui.usingApp
-import eu.vaadinonkotlin.restclient.*
-import org.eclipse.jetty.ee10.webapp.WebAppContext
-import org.eclipse.jetty.server.Server
+import org.http4k.asString
+import org.http4k.core.*
+import org.http4k.filter.ClientFilters
 import java.io.FileNotFoundException
-import java.net.http.HttpClient
+import java.io.IOException
+import kotlin.test.expect
+
+private fun Response.checkOk(request: Request) {
+    if (!status.successful) {
+        val msg = "$request ====> $this"
+        close() // close the streams in case of StreamResponse
+        if (status.code == 404) throw FileNotFoundException(msg)
+        throw IOException(msg)
+    }
+}
 
 /**
- * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
- * [vok-rest-client](https://github.com/mvysny/vaadin-on-kotlin/tree/master/vok-rest-client) module for more details.
+ * Makes sure that the [Response]'s code is 200..299. Fails with an exception if it's not.
  */
-class PersonRestClient(val baseUrl: String) {
-    init {
-        require(!baseUrl.endsWith("/")) { "$baseUrl must not end with a slash" }
-    }
-    private val client: HttpClient = VokRestClient.httpClient
-    fun getAllCategories(): List<Category> {
-        val request = "$baseUrl/categories".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.jsonArray(Category::class.java) }
-    }
-    fun getAllReviews(): List<Review> {
-        val request = "$baseUrl/reviews".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.jsonArray(Review::class.java) }
-    }
-    fun nonexistingEndpoint() {
-        val request = "$baseUrl/nonexisting".buildUrl().buildRequest()
-        client.exec(request) { }
-    }
-}
+val CheckOk = Filter { next -> { next(it).apply { checkOk(it) } } }
 
-@DynaTestDsl
-fun DynaNodeGroup.usingJavalin() {
-    lateinit var server: Server
-    beforeGroup {
-        val ctx = WebAppContext()
-        // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
-        ctx.baseResource = ctx.resourceFactory.newClassLoaderResource("java/lang/String.class")
-        ctx.addServlet(JavalinRestServlet::class.java, "/rest/*")
-        server = Server(9876)
-        server.handler = ctx
-        server.start()
+fun Request.accept(contentType: ContentType): Request =
+    header("Accept", contentType.toHeaderValue())
+
+fun Request.acceptJson(): Request = accept(ContentType.APPLICATION_JSON)
+
+class PersonRestClient {
+    private val client: HttpHandler = ClientFilters.FollowRedirects()
+        .then(CheckOk)
+        .then(RestService.app)
+    private val gson = RestService.gson
+
+    fun getAllCategories(): List<Category> {
+        val request = Request(Method.GET, "categories").acceptJson()
+        return client(request).use { it.body.jsonArray<Category>(gson) }
     }
-    afterGroup { server.stop() }
+    fun getAllCategoriesString(): String {
+        val request = Request(Method.GET, "categories").acceptJson()
+        return client(request).use { it.body.payload.asString() }
+    }
+
+    fun nonexistingEndpoint() {
+        val request = Request(Method.GET, "foo").acceptJson()
+        client(request).use { }
+    }
 }
 
 /**
- * The REST test. It bootstraps the app, then it starts Javalin with Jetty so that we can access it via the
- * [PersonRestClient].
+ * The REST test.
  */
 class RestServiceTest : DynaTest({
     usingApp()
-    usingJavalin()
 
     lateinit var client: PersonRestClient
-    beforeEach { client = PersonRestClient("http://localhost:9876/rest") }
+    beforeEach { client = PersonRestClient() }
 
     test("categories smoke test") {
         expectList() { client.getAllCategories() }
+        expect("[]") { client.getAllCategoriesString() }
     }
-
-    test("reviews smoke test") {
-        expectList() { client.getAllReviews() }
+    test("one category") {
+        Categories.create(com.vaadin.starter.beveragebuddy.backend.ktorm.Category { name = "Foo"})
+        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategoriesString() }
+        expectList("Foo") { client.getAllCategories().map { it.name } }
+        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategoriesString() }
     }
-
     test("404") {
         expectThrows<FileNotFoundException> {
             client.nonexistingEndpoint()
