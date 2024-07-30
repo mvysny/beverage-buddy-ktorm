@@ -24,7 +24,9 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.validator.StringLengthValidator
 import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
+import com.vaadin.starter.beveragebuddy.backend.ktorm.create
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import com.vaadin.starter.beveragebuddy.ui.EditorForm
 import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
@@ -92,7 +94,11 @@ class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) 
         val frame = EditorDialogFrame(CategoryEditorForm(category))
         frame.onSaveItem = {
             val creating: Boolean = category.id == null
-            category.save()
+            if (creating) {
+                Categories.create(category)
+            } else {
+                category.save()
+            }
             val op: String = if (creating) "added" else "saved"
             Notification.show("Category successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onCategoriesChanged(category)

@@ -38,7 +38,8 @@ dependencies {
     implementation(libs.vaadin.boot)
 
     implementation(libs.vok.db)
-    implementation(libs.ktorm)
+    implementation(libs.ktorm.core)
+    implementation(libs.ktorm.mysql)
     implementation(libs.hikaricp)
 
     // logging
