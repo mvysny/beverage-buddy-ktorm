@@ -4,7 +4,7 @@ import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.expectList
 import com.github.mvysny.dynatest.expectThrows
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
-import com.vaadin.starter.beveragebuddy.backend.ktorm.Category.Companion
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.create
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import org.http4k.asString
@@ -68,7 +68,7 @@ class RestServiceTest : DynaTest({
         expect("[]") { client.getAllCategoriesString() }
     }
     test("one category") {
-        Categories.create(com.vaadin.starter.beveragebuddy.backend.ktorm.Category { name = "Foo"})
+        Categories.create(Category { name = "Foo"})
         expectMatch("""\[\{"id":\d+,"name":"Foo"}]""".toRegex()) { client.getAllCategoriesString() }
         expectList("Foo") { client.getAllCategories().map { it.name } }
     }

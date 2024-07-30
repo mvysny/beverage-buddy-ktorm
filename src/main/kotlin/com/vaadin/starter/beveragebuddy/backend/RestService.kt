@@ -19,6 +19,10 @@ import org.http4k.servlet.jakarta.Http4kJakartaServletAdapter
 import org.ktorm.entity.Entity
 import org.ktorm.entity.toList
 import java.lang.reflect.Type
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaType
 
 object RestService {
     val gson: Gson = GsonBuilder().registerJavaTimeAdapters().registerTypeHierarchyAdapter(Entity::class.java, KtormEntityGsonConverter()).create()
@@ -50,7 +54,7 @@ private fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
     Converters.registerAll(this)
 }
 
-class KtormEntityGsonConverter : JsonSerializer<Entity<*>> {
+class KtormEntityGsonConverter : JsonSerializer<Entity<*>>, JsonDeserializer<Entity<*>> {
     override fun serialize(
         src: Entity<*>,
         typeOfSrc: Type,
@@ -63,5 +67,33 @@ class KtormEntityGsonConverter : JsonSerializer<Entity<*>> {
             }
         }
         return result
+    }
+
+    private fun findWritableProperties(
+        entityClass: KClass<*>
+    ): Map<String, KProperty1<*, *>> {
+        val skipNames = Entity::class.memberProperties.map { it.name }.toSet()
+        return entityClass.memberProperties
+            .asSequence()
+            .filter { it.isAbstract }
+            .filter { it.name !in skipNames }
+//            .filter { it.findAnnotationForDeserialization<JsonIgnore>() == null }
+            .map { prop -> prop.name to prop }
+            .toMap()
+    }
+
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
+    ): Entity<*> {
+        val entityKClass = (typeOfT as Class<*>).kotlin
+        val props = findWritableProperties(entityKClass)
+        val entity = Entity.create(entityKClass)
+        json.asJsonObject.entrySet().forEach { entry ->
+            val property = requireNotNull(props[entry.key]) { "$entityKClass: no property for ${entry.key}" }
+            entity[entry.key] = context.deserialize(entry.value, property.returnType.javaType)
+        }
+        return entity
     }
 }
