@@ -69,6 +69,7 @@ class KtormEntityGsonConverter : JsonSerializer<Entity<*>>, JsonDeserializer<Ent
         return result
     }
 
+    // copied from ktorm-jackson
     private fun findWritableProperties(
         entityClass: KClass<*>
     ): Map<String, KProperty1<*, *>> {
