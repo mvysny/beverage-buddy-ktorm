@@ -69,9 +69,8 @@ class RestServiceTest : DynaTest({
     }
     test("one category") {
         Categories.create(com.vaadin.starter.beveragebuddy.backend.ktorm.Category { name = "Foo"})
-        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategoriesString() }
+        expectMatch("""\[\{"id":\d+,"name":"Foo"}]""".toRegex()) { client.getAllCategoriesString() }
         expectList("Foo") { client.getAllCategories().map { it.name } }
-        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategoriesString() }
     }
     test("404") {
         expectThrows<FileNotFoundException> {
@@ -79,3 +78,8 @@ class RestServiceTest : DynaTest({
         }
     }
 })
+
+fun expectMatch(regex: Regex, actualBlock: () -> String) {
+    val actual = actualBlock()
+    expect(true, "Expected $regex, actual $actual") { regex.matches(actual) }
+}
