@@ -41,12 +41,12 @@ class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Cate
     init {
         textField("Category Name") {
             bind(binder)
-                    .trimmingConverter()
-                    .withValidator(StringLengthValidator(
+                .trimmingConverter()
+                .withValidator(StringLengthValidator(
                             "Category name must contain at least 3 printable characters",
                             3, null))
-                    .withValidator({ name -> isNameUnique(name) }, "Category name must be unique")
-                    .bind(Category::name)
+                .withValidator({ name -> isNameUnique(name) }, "Category name must be unique")
+                .bind(Category::name)
         }
     }
 
