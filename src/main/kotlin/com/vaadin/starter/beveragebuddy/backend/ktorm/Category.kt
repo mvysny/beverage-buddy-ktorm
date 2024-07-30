@@ -2,7 +2,9 @@ package com.vaadin.starter.beveragebuddy.backend.ktorm
 
 import jakarta.validation.constraints.NotBlank
 import org.ktorm.database.Database
+import org.ktorm.dsl.deleteAll
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.update
 import org.ktorm.entity.*
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
@@ -11,6 +13,15 @@ import org.ktorm.schema.varchar
 object Categories : Table<Category>("category") {
     val id = long("id").primaryKey().bindTo { it.id }
     val name = varchar("NAME").bindTo { it.name }
+
+    fun deleteAll() {
+        db {
+            database.update(Reviews) {
+                set(Reviews.category, null)
+            }
+            database.deleteAll(Categories)
+        }
+    }
 }
 
 val Database.categories get() = this.sequenceOf(Categories)

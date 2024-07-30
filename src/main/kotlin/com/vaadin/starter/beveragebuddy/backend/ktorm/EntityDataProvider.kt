@@ -59,3 +59,5 @@ class EntityDataProvider<T: Entity<T>>(val table: Table<T>) : AbstractBackEndDat
         refreshAll()
     }
 }
+
+val <E: Entity<E>> Table<E>.dataProvider: EntityDataProvider<E> get() = EntityDataProvider(this)

@@ -10,7 +10,7 @@ import java.time.LocalDate
 object Reviews : Table<Review>("review") {
     val id = long("id").primaryKey().bindTo { it.id }
     val name = varchar("NAME").bindTo { it.name }
-    val date = date("NAME").bindTo { it.date }
+    val date = date("date").bindTo { it.date }
     val category = long("category").bindTo { it.category }
     val count = int("count").bindTo { it.count }
 }

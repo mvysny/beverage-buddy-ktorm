@@ -4,8 +4,9 @@ import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.Category
+import com.vaadin.starter.beveragebuddy.backend.ktorm.*
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
+import org.ktorm.entity.single
 import kotlin.test.expect
 
 /**
@@ -27,12 +28,11 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { Category.single().name }
+        expect("Beer") { db { database.categories.single().name } }
     }
 
     test("edit existing category") {
-        val cat = Category(name = "Foo")
-        cat.save()
+        val cat = Categories.create(Category { name = "Foo" })
 
         CategoryEditorDialog {} .edit(cat)
 
@@ -45,6 +45,6 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully saved.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { Category.single().name }
+        expect("Beer") { db { database.categories.single().name } }
     }
 })
