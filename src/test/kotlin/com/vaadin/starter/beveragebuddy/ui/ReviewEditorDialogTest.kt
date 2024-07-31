@@ -6,9 +6,9 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.*
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
+import org.ktorm.entity.single
 import kotlin.test.expect
 
 class ReviewEditorDialogTest : DynaTest({
@@ -43,12 +43,11 @@ class ReviewEditorDialogTest : DynaTest({
 
         _expectOne<EditorDialogFrame<*>>()
         // no review has been created
-        expectList() { Review.findAll() }
+        expectList() { Reviews.findAll() }
     }
 
     test("create new review") {
-        val cat = Category(name = "Beers")
-        cat.save()
+        val cat = Categories.create(Category { name = "Beers" })
 
         _get<Button> { text = "New review (Alt+N)" }._click()
 
@@ -62,7 +61,7 @@ class ReviewEditorDialogTest : DynaTest({
         expectNotifications("Beverage successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        val review = Review.single()
+        val review = db { database.reviews.single() }
         expect("Test") { review.name }
         expect(3) { review.score }
         expect(cat.id) { review.category }

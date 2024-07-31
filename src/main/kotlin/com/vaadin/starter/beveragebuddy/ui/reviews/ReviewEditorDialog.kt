@@ -19,14 +19,10 @@ import com.github.mvysny.karibudsl.v10.*
 import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
-import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.*
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
 import com.vaadin.starter.beveragebuddy.ui.EditorForm
-import eu.vaadinonkotlin.vaadin.vokdb.dataProvider
-import eu.vaadinonkotlin.vaadin.vokdb.toId
-import eu.vaadinonkotlin.vaadin.vokdb.withStringFilterOn
 import java.time.LocalDate
 
 /**
@@ -44,10 +40,10 @@ class ReviewEditorForm : FormLayout(), EditorForm<Review> {
 
         textField("Beverage name") {
             // no need to have validators here: they are automatically picked up from the bean field.
-            bind(binder).trimmingConverter().bind(Review::name)
+            bind(binder).trimmingConverter().bind(Reviews.name)
         }
         integerField("Times tasted") {
-            bind(binder).bind(Review::count)
+            bind(binder).bind(Reviews.count)
         }
         comboBox<Category>("Choose a category") {
             // we need to show a list of options for the user to choose from. For every option we need to retain at least:
@@ -62,20 +58,20 @@ class ReviewEditorForm : FormLayout(), EditorForm<Review> {
             isAllowCustomValue = false
 
             // provide the list of options as a DataProvider, providing instances of Category
-            setItems(Category.dataProvider.withStringFilterOn(Category::name))
+            setItems(Categories.dataProvider.withStringFilterOn(Categories.name))
 
             // bind the combo box to the Review::category field so that changes done by the user are stored.
-            bind(binder).toId().bind(Review::category)
+            bind(binder).toId(Reviews.id).bind(Reviews.category)
         }
         datePicker("Choose the date") {
             max = LocalDate.now()
             min = LocalDate.of(1, 1, 1)
-            bind(binder).bind(Review::date)
+            bind(binder).bind(Reviews.date)
         }
         comboBox<String>("Mark a score") {
             isAllowCustomValue = false
             setItems("1", "2", "3", "4", "5")
-            bind(binder).toInt().bind(Review::score)
+            bind(binder).toInt().bind(Reviews.score)
         }
     }
 }
@@ -108,12 +104,17 @@ class ReviewEditorDialog(private val onReviewsChanged: (Review) -> Unit) {
         val frame: EditorDialogFrame<Review> = EditorDialogFrame(ReviewEditorForm())
         frame.onSaveItem = {
             val creating: Boolean = review.id == null
-            review.save()
+            review.save(Reviews.id)
             val op = if (creating) "added" else "saved"
             Notification.show("Beverage successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onReviewsChanged(review)
         }
         frame.onDeleteItem = { item -> maybeDelete(frame, item) }
+        if (review.id == null) {
+            review.date = LocalDate.now()
+            review.score = 1
+            review.count = 1
+        }
         frame.open(review, review.id == null)
     }
 }

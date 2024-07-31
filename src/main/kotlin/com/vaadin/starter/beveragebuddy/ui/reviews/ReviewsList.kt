@@ -28,10 +28,15 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.backend.ReviewWithCategory
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
+import com.vaadin.starter.beveragebuddy.backend.ktorm.db
+import com.vaadin.starter.beveragebuddy.backend.ktorm.reviews
 import com.vaadin.starter.beveragebuddy.backend.setFilterText
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
 import com.vaadin.starter.beveragebuddy.ui.toolbarView
+import org.ktorm.dsl.eq
+import org.ktorm.entity.single
 
 /**
  * Displays the list of available categories, with a search filter as well as
@@ -62,7 +67,7 @@ class ReviewsList : KComposite() {
                 addClassName("reviews")
                 setRenderer(ComponentRenderer<ReviewItem, ReviewWithCategory> { row ->
                     val item = ReviewItem(row)
-                    item.onEdit = { editDialog.edit(Review.getById(row.review!!.id!!)) }
+                    item.onEdit = { edit(row) }
                     item
                 })
             }
@@ -71,6 +76,11 @@ class ReviewsList : KComposite() {
 
     init {
         updateList()
+    }
+
+    private fun edit(row: ReviewWithCategory) {
+        val review = db { database.reviews.single { Reviews.id.eq(row.review!!.id!!) } }
+        editDialog.edit(review)
     }
 
     private fun updateList() {

@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolationException
 import org.ktorm.entity.Entity
 import org.ktorm.entity.add
 import org.ktorm.entity.sequenceOf
+import org.ktorm.schema.Column
 import org.ktorm.schema.Table
 
 /**
@@ -42,11 +43,25 @@ interface ValidatableEntity<E : Entity<E>> : Entity<E> {
             false
         }
 
-    fun save(validate: Boolean = true) {
+    fun save(idColumn: Column<*>, validate: Boolean = true) {
         if (validate) {
             validate()
         }
-        flushChanges()
+        val attached = get(idColumn.name) != null
+        if (attached) {
+            flushChanges()
+        } else {
+            create(idColumn, false)
+        }
+    }
+
+    fun create(idColumn: Column<*>, validate: Boolean = true) {
+        if (validate) {
+            validate()
+        }
+        db {
+            database.sequenceOf(idColumn.table as Table<E>).add(this@ValidatableEntity as E)
+        }
     }
 }
 
