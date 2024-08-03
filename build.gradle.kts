@@ -39,7 +39,7 @@ dependencies {
 
     implementation(libs.vok.db)
     implementation(libs.ktorm.core)
-    implementation(libs.ktorm.mysql)
+    implementation(libs.ktorm.postgresql)
     implementation(libs.hikaricp)
 
     // logging

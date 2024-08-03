@@ -11,6 +11,7 @@ import org.ktorm.entity.filter
 import org.ktorm.entity.sequenceOf
 import org.ktorm.expression.OrderByExpression
 import org.ktorm.schema.*
+import org.ktorm.support.postgresql.ilike
 import java.util.stream.Stream
 import kotlin.reflect.KProperty1
 
@@ -73,8 +74,7 @@ val <E: Entity<E>> Table<E>.dataProvider: EntityDataProvider<E> get() = EntityDa
 
 fun <T: Entity<T>> EntityDataProvider<T>.withStringFilterOn(col: Column<String>): DataProvider<T, String> =
     withStringFilter {
-        // @todo ilike: https://github.com/kotlin-orm/ktorm/issues/570
-        col.like("${it.trim()}%")
+        col.ilike("${it.trim()}%")
     }
 
 /**

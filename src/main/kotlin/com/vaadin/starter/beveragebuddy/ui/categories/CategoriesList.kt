@@ -40,6 +40,7 @@ import com.vaadin.starter.beveragebuddy.ui.*
 import eu.vaadinonkotlin.vaadin.setSortProperty
 import eu.vaadinonkotlin.vaadin.vokdb.dataProvider
 import org.ktorm.dsl.like
+import org.ktorm.support.postgresql.ilike
 
 /**
  * Displays the list of available categories, with a search filter as well as
@@ -114,8 +115,7 @@ class CategoriesList : KComposite() {
 
     private fun updateView() {
         if (toolbar.searchText.isNotBlank()) {
-            // todo ILIKE https://github.com/kotlin-orm/ktorm/issues/570
-            dataProvider.setFilter(Categories.name.like("${toolbar.searchText.trim()}%"))
+            dataProvider.setFilter(Categories.name.ilike("${toolbar.searchText.trim()}%"))
             header.text = "Search for “${toolbar.searchText}”"
         } else {
             dataProvider.setFilter(null)
