@@ -50,4 +50,13 @@ interface Category : ValidatableEntity<Category> {
         fun existsWithName(name: String): Boolean =
             db { database.categories.any { it.name eq name } }
     }
+
+    fun deleteAndClearFromReview(): Int = db {
+        if (id != null) {
+            handle.createUpdate("update Review set category = NULL where category=:catId")
+                .bind("catId", id!!)
+                .execute()
+        }
+        delete()
+    }
 }
