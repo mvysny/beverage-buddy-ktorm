@@ -1,31 +1,30 @@
 package com.vaadin.starter.beveragebuddy.ui
 
-import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.ktorm.*
+import com.vaadin.starter.beveragebuddy.AbstractAppTest
+import com.vaadin.starter.beveragebuddy.backend.Category
+import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
-import org.ktorm.entity.single
+import org.junit.jupiter.api.Test
 import kotlin.test.expect
 
-class ReviewEditorDialogTest : DynaTest({
-    usingApp()
-
-    test("smoke") {
+class ReviewEditorDialogTest : AbstractAppTest() {
+    @Test fun smoke() {
         ReviewEditorDialog({}).createNew()
         _expectOne<EditorDialogFrame<*>>()
     }
 
-    test("'cancel' closes the dialog") {
+    @Test fun `'cancel' closes the dialog`() {
         ReviewEditorDialog({}).createNew()
         _get<Button> { text = "Cancel" }._click()
         _expectNone<EditorDialogFrame<*>>()
     }
 
-    test("simple validation failure") {
+    @Test fun `simple validation failure`() {
         ReviewEditorDialog({}).createNew()
         _expectOne<EditorDialogFrame<*>>()
         _get<Button> { text = "Create" } ._click()
@@ -35,7 +34,7 @@ class ReviewEditorDialogTest : DynaTest({
         _get<TextField> { label = "Beverage name"} ._expectInvalid("must not be blank")
     }
 
-    test("create review without setting a category fails") {
+    @Test fun `create review without setting a category fails`() {
         ReviewEditorDialog({}).createNew()
         _expectOne<EditorDialogFrame<*>>()
         _get<TextField> { label = "Beverage name" } ._value = "FooBar"
@@ -43,11 +42,12 @@ class ReviewEditorDialogTest : DynaTest({
 
         _expectOne<EditorDialogFrame<*>>()
         // no review has been created
-        expectList() { Reviews.findAll() }
+        expectList() { Review.findAll() }
     }
 
-    test("create new review") {
-        val cat = Categories.create(Category { name = "Beers" })
+    @Test fun `create new review`() {
+        val cat = Category(name = "Beers")
+        cat.save()
 
         _get<Button> { text = "New review (Alt+N)" }._click()
 
@@ -61,10 +61,10 @@ class ReviewEditorDialogTest : DynaTest({
         expectNotifications("Beverage successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        val review = db { database.reviews.single() }
+        val review = Review.single()
         expect("Test") { review.name }
         expect(3) { review.score }
         expect(cat.id) { review.category }
         expect(1) { review.count }
     }
-})
+}

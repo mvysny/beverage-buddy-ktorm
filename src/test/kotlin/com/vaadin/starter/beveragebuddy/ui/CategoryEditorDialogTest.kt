@@ -1,22 +1,19 @@
 package com.vaadin.starter.beveragebuddy.ui
 
-import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.ktorm.*
+import com.vaadin.starter.beveragebuddy.AbstractAppTest
+import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
-import org.ktorm.entity.single
+import org.junit.jupiter.api.Test
 import kotlin.test.expect
 
 /**
  * Tests the UI. Uses the Browserless Testing approach as provided by the [Karibu Testing](https://github.com/mvysny/karibu-testing) library.
  */
-class CategoryEditorDialogTest : DynaTest({
-
-    usingApp()
-
-    test("create new category") {
+class CategoryEditorDialogTest : AbstractAppTest() {
+    @Test fun `create new category`() {
         CategoryEditorDialog {} .createNew()
 
         // make sure that the "New Category" dialog is opened
@@ -28,11 +25,12 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { db { database.categories.single().name } }
+        expect("Beer") { Category.single().name }
     }
 
-    test("edit existing category") {
-        val cat = Categories.create(Category { name = "Foo" })
+    @Test fun `edit existing category`() {
+        val cat = Category(name = "Foo")
+        cat.save()
 
         CategoryEditorDialog {} .edit(cat)
 
@@ -45,6 +43,6 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully saved.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { db { database.categories.single().name } }
+        expect("Beer") { Category.single().name }
     }
-})
+}

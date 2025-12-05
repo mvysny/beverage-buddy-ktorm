@@ -1,85 +1,70 @@
 package com.vaadin.starter.beveragebuddy.backend
 
-import com.github.mvysny.dynatest.DynaTest
-import com.github.mvysny.dynatest.expectList
-import com.github.mvysny.dynatest.expectThrows
-import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
-import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
-import com.vaadin.starter.beveragebuddy.backend.ktorm.create
-import com.vaadin.starter.beveragebuddy.ui.usingApp
-import org.http4k.asString
-import org.http4k.core.*
-import org.http4k.filter.ClientFilters
+import com.github.mvysny.kaributesting.v10.expectList
+import com.vaadin.starter.beveragebuddy.AbstractAppTest
+import eu.vaadinonkotlin.restclient.*
+import org.eclipse.jetty.ee10.webapp.WebAppContext
+import org.eclipse.jetty.server.Server
+import org.junit.jupiter.api.*
 import java.io.FileNotFoundException
-import java.io.IOException
-import kotlin.test.expect
-
-private fun Response.checkOk(request: Request) {
-    if (!status.successful) {
-        val msg = "$request ====> $this"
-        close() // close the streams in case of StreamResponse
-        if (status.code == 404) throw FileNotFoundException(msg)
-        throw IOException(msg)
-    }
-}
+import java.net.http.HttpClient
 
 /**
- * Makes sure that the [Response]'s code is 200..299. Fails with an exception if it's not.
+ * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
+ * [vok-rest-client](https://github.com/mvysny/vaadin-on-kotlin/tree/master/vok-rest-client) module for more details.
  */
-val CheckOk = Filter { next -> { next(it).apply { checkOk(it) } } }
-
-fun Request.accept(contentType: ContentType): Request =
-    header("Accept", contentType.toHeaderValue())
-
-fun Request.acceptJson(): Request = accept(ContentType.APPLICATION_JSON)
-
-class PersonRestClient {
-    private val client: HttpHandler = ClientFilters.FollowRedirects()
-        .then(CheckOk)
-        .then(RestService.app)
-    private val gson = RestService.gson
-
+class PersonRestClient(val baseUrl: String) {
+    init {
+        require(!baseUrl.endsWith("/")) { "$baseUrl must not end with a slash" }
+    }
+    private val client: HttpClient = VokRestClient.httpClient
     fun getAllCategories(): List<Category> {
-        val request = Request(Method.GET, "categories").acceptJson()
-        return client(request).use { it.body.jsonArray<Category>(gson) }
+        val request = "$baseUrl/categories".buildUrl().buildRequest()
+        return client.exec(request) { response -> response.jsonArray(Category::class.java) }
     }
-    fun getAllCategoriesString(): String {
-        val request = Request(Method.GET, "categories").acceptJson()
-        return client(request).use { it.body.payload.asString() }
+    fun getAllReviews(): List<Review> {
+        val request = "$baseUrl/reviews".buildUrl().buildRequest()
+        return client.exec(request) { response -> response.jsonArray(Review::class.java) }
     }
-
     fun nonexistingEndpoint() {
-        val request = Request(Method.GET, "foo").acceptJson()
-        client(request).use { }
+        val request = "$baseUrl/nonexisting".buildUrl().buildRequest()
+        client.exec(request) { }
     }
 }
 
 /**
- * The REST test.
+ * The REST test. It bootstraps the app, then it starts Javalin with Jetty so that we can access it via the
+ * [PersonRestClient].
  */
-class RestServiceTest : DynaTest({
-    usingApp()
+class RestServiceTest : AbstractAppTest() {
+    companion object {
+        private lateinit var server: Server
+        @BeforeAll @JvmStatic fun startJavalin() {
+            val ctx = WebAppContext()
+            // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
+            ctx.baseResource = ctx.resourceFactory.newClassLoaderResource("java/lang/String.class")
+            ctx.addServlet(JavalinRestServlet::class.java, "/rest/*")
+            server = Server(9876)
+            server.handler = ctx
+            server.start()
+        }
+        @AfterAll @JvmStatic fun stopJavalin() { server.stop() }
+    }
 
-    lateinit var client: PersonRestClient
-    beforeEach { client = PersonRestClient() }
+    private lateinit var client: PersonRestClient
+    @BeforeEach fun createClient() { client = PersonRestClient("http://localhost:9876/rest") }
 
-    test("categories smoke test") {
+    @Test fun `categories smoke test`() {
         expectList() { client.getAllCategories() }
-        expect("[]") { client.getAllCategoriesString() }
     }
-    test("one category") {
-        Categories.create(Category { name = "Foo"})
-        expectMatch("""\[\{"id":\d+,"name":"Foo"}]""".toRegex()) { client.getAllCategoriesString() }
-        expectList("Foo") { client.getAllCategories().map { it.name } }
+
+    @Test fun `reviews smoke test`() {
+        expectList() { client.getAllReviews() }
     }
-    test("404") {
-        expectThrows<FileNotFoundException> {
+
+    @Test fun `404`() {
+        assertThrows<FileNotFoundException> {
             client.nonexistingEndpoint()
         }
     }
-})
-
-fun expectMatch(regex: Regex, actualBlock: () -> String) {
-    val actual = actualBlock()
-    expect(true, "Expected $regex, actual $actual") { regex.matches(actual) }
 }
