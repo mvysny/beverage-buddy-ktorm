@@ -4,6 +4,7 @@ import com.vaadin.flow.data.provider.AbstractBackEndDataProvider
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.Query
+import com.vaadin.flow.data.provider.SortDirection
 import com.vaadin.flow.function.SerializableFunction
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -41,9 +42,9 @@ class QueryDataProvider<T>(val querySource: (Database) -> QuerySource, val query
 
     private val Query<T, ColumnDeclaring<Boolean>>.orderBy: List<OrderByExpression> get() {
         return sortOrders.map { sortOrder ->
-            throw RuntimeException("Unsupported")
-//            val column = querySource(null).expression.get[sortOrder.sorted]
-//            if (sortOrder.direction == SortDirection.ASCENDING) column.asc() else column.desc()
+            // @TODO this only takes the first database into account!
+            val column = querySource(SimpleKtorm.database).sourceTable[sortOrder.sorted]
+            if (sortOrder.direction == SortDirection.ASCENDING) column.asc() else column.desc()
         }
     }
 
