@@ -70,11 +70,26 @@ class EntityDataProvider<T: Entity<T>>(val table: Table<T>) : AbstractBackEndDat
     }
 }
 
+/**
+ * Returns Vaadin {@link EntityDataProvider} which loads instances of this entity. See {@link EntityDataProvider}
+ * for more information.
+ */
 val <E: Entity<E>> Table<E>.dataProvider: EntityDataProvider<E> get() = EntityDataProvider(this)
 
-fun <T: Entity<T>> EntityDataProvider<T>.withStringFilterOn(col: Column<String>): DataProvider<T, String> =
+/**
+ * Returns a [DataProvider] which accepts a [String] filter; when a non-blank String is provided,
+ * a `col ilike string%` where clause is added to the query.
+ * Example of use:
+ * ```
+ * setItems(Categories.dataProvider.withStringFilterOn(Categories.name))
+ * ```
+ * @param column the [Table] column from entity [T]
+ * @param T the entity type
+ * @return [DataProvider] which matches filter string against the value of given [column].
+ */
+fun <T: Entity<T>> EntityDataProvider<T>.withStringFilterOn(column: Column<String>): DataProvider<T, String> =
     withStringFilter {
-        col.ilike("${it.trim()}%")
+        column.ilike("${it.trim()}%")
     }
 
 /**
