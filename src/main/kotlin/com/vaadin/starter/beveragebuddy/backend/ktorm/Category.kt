@@ -10,6 +10,7 @@ import org.ktorm.schema.Column
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
 import org.ktorm.schema.varchar
+import org.ktorm.support.postgresql.bulkInsertOrUpdate
 
 object Categories : Table<Category>("category") {
     val id = long("id").primaryKey().bindTo { it.id }
@@ -52,10 +53,12 @@ interface Category : ValidatableEntity<Category> {
     }
 
     fun deleteAndClearFromReview(): Int = db {
+        val id = id
         if (id != null) {
-            handle.createUpdate("update Review set category = NULL where category=:catId")
-                .bind("catId", id!!)
-                .execute()
+           database.update(Reviews) {
+               set(it.category, null)
+               where { it.category eq id }
+           }
         }
         delete()
     }
