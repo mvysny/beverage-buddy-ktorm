@@ -15,6 +15,7 @@ object Reviews : Table<Review>("review") {
     val category = long("category").bindTo { it.category }
     val count = int("COUNT").bindTo { it.count }
 }
+
 val Database.reviews get() = this.sequenceOf(Reviews)
 
 /**
@@ -49,6 +50,8 @@ interface Review : ValidatableEntity<Review> {
     @get:Min(1)
     @get:Max(99)
     var count: Int
+
+    override val idColumn: Column<*> get() = Reviews.id
 
     companion object : Entity.Factory<Review>()
 }

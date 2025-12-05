@@ -6,6 +6,7 @@ import org.ktorm.dsl.deleteAll
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.update
 import org.ktorm.entity.*
+import org.ktorm.schema.Column
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
 import org.ktorm.schema.varchar
@@ -32,14 +33,21 @@ val Database.categories get() = this.sequenceOf(Categories)
  * @property name the category name
  */
 interface Category : ValidatableEntity<Category> {
-        var id: Long?
+    var id: Long?
 
-        @get:NotBlank
-        var name: String
+    @get:NotBlank
+    var name: String
+
+    override val idColumn: Column<*> get() = Categories.id
 
     companion object : Entity.Factory<Category>() {
-        fun findByName(name: String): Category? = db { database.categories.singleOrNull { it.name eq name } }
-        fun getByName(name: String): Category = db { database.categories.single { it.name eq name } }
-        fun existsWithName(name: String): Boolean = db { database.categories.any { it.name eq name } }
+        fun findByName(name: String): Category? =
+            db { database.categories.singleOrNull { it.name eq name } }
+
+        fun getByName(name: String): Category =
+            db { database.categories.single { it.name eq name } }
+
+        fun existsWithName(name: String): Boolean =
+            db { database.categories.any { it.name eq name } }
     }
 }

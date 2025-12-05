@@ -94,7 +94,7 @@ class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) 
         val frame = EditorDialogFrame(CategoryEditorForm(category))
         frame.onSaveItem = {
             val creating: Boolean = category.id == null
-            category.save(Categories.id)
+            category.save()
             val op: String = if (creating) "added" else "saved"
             Notification.show("Category successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onCategoriesChanged(category)

@@ -32,6 +32,8 @@ interface ValidatableEntity<E : Entity<E>> : Entity<E> {
         }
     }
 
+    val idColumn: Column<*>
+
     /**
      * Checks whether this entity is valid: calls [validate] and returns false if [ConstraintViolationException] is thrown.
      */
@@ -43,7 +45,7 @@ interface ValidatableEntity<E : Entity<E>> : Entity<E> {
             false
         }
 
-    fun save(idColumn: Column<*>, validate: Boolean = true) {
+    fun save(validate: Boolean = true) {
         if (validate) {
             validate()
         }
@@ -51,11 +53,11 @@ interface ValidatableEntity<E : Entity<E>> : Entity<E> {
         if (attached) {
             flushChanges()
         } else {
-            create(idColumn, false)
+            create(false)
         }
     }
 
-    fun create(idColumn: Column<*>, validate: Boolean = true) {
+    fun create(validate: Boolean = true) {
         if (validate) {
             validate()
         }

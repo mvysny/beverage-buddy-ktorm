@@ -5,6 +5,7 @@ import jakarta.validation.Validator
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.single
 import org.ktorm.entity.toList
 import org.ktorm.schema.Table
 
@@ -24,4 +25,7 @@ object SimpleKtorm {
 
 fun <E : Entity<E>> Table<E>.findAll(): List<E> = db {
     database.sequenceOf(this@findAll).toList()
+}
+fun <E : Entity<E>> Table<E>.single(): E = db {
+    database.sequenceOf(this@single).single()
 }
