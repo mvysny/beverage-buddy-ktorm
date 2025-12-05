@@ -7,9 +7,11 @@ import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.create
+import com.vaadin.starter.beveragebuddy.backend.ktorm.findAll
+import com.vaadin.starter.beveragebuddy.backend.ktorm.single
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
 import org.junit.jupiter.api.Test
 import kotlin.test.expect
@@ -50,7 +52,7 @@ class ReviewEditorDialogTest : AbstractAppTest() {
 
         _expectOne<EditorDialogFrame<*>>()
         // no review has been created
-        expectList() { Review.findAll() }
+        expectList() { Reviews.findAll() }
     }
 
     @Test
@@ -69,7 +71,7 @@ class ReviewEditorDialogTest : AbstractAppTest() {
         expectNotifications("Beverage successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        val review = Review.single()
+        val review = Reviews.single()
         expect("Test") { review.name }
         expect(3) { review.score }
         expect(cat.id) { review.category }
