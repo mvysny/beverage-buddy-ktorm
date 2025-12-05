@@ -10,7 +10,6 @@ import org.ktorm.schema.Column
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
 import org.ktorm.schema.varchar
-import org.ktorm.support.postgresql.bulkInsertOrUpdate
 
 object Categories : Table<Category>("category") {
     val id = long("id").primaryKey().bindTo { it.id }
