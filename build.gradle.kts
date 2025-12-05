@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.ktorm.core)
     implementation(libs.ktorm.postgresql)
     implementation(libs.hikaricp)
+    implementation("org.hibernate.validator:hibernate-validator:9.1.0.Final")
 
     // logging
     // currently we are logging through the SLF4J API to SLF4J-Simple. See src/main/resources/simplelogger.properties file for the logger configuration
