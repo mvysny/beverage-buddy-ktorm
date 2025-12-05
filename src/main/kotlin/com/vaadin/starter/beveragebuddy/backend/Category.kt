@@ -3,8 +3,6 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.github.vokorm.*
 import com.gitlab.mvysny.jdbiorm.Dao
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotEmpty
-import jakarta.validation.constraints.NotNull
 
 /**
  * Represents a beverage category.
