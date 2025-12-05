@@ -1,10 +1,8 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
-import org.ktorm.dsl.QueryRowSet
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.from
-import org.ktorm.dsl.leftJoin
-import org.ktorm.dsl.select
+import org.ktorm.dsl.*
+import org.ktorm.schema.VarcharSqlType
+import org.ktorm.support.postgresql.ilike
 import java.io.Serializable
 
 /**
@@ -29,5 +27,21 @@ data class ReviewWithCategory(
                 { it.from(Reviews).leftJoin(Categories, on = Reviews.category eq Categories.id) },
                 { it.select(*Reviews.columns.toTypedArray(), Categories.name)},
                 { from(it) })
+    }
+}
+
+/**
+ * This utility function returns a new loader which searches for given [filter] text
+ * in all [Review] and [ReviewWithCategory] fields.
+ */
+fun QueryDataProvider<ReviewWithCategory>.setFilterText(filter: String?) {
+    if (filter.isNullOrBlank()) {
+        setFilter(null)
+    } else {
+        val normalizedFilter: String = filter.trim().lowercase() + "%"
+        val c = Categories.name.ilike(normalizedFilter) or
+               Reviews.score.cast(VarcharSqlType).ilike(normalizedFilter) or
+                Reviews.count.cast(VarcharSqlType).ilike(normalizedFilter)
+        setFilter(c)
     }
 }
