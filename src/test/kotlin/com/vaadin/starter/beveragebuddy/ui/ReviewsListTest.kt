@@ -9,10 +9,11 @@ import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.virtuallist.VirtualList
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
-import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.ReviewWithCategory
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.ReviewWithCategory
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 class ReviewsListTest : AbstractAppTest() {
     @Test fun `no reviews initially`() {
@@ -21,9 +22,9 @@ class ReviewsListTest : AbstractAppTest() {
 
     @Test fun reviewsListed() {
         // prepare testing data
-        val cat = Category(name = "Beers")
+        val cat = Category{name = "Beers"}
         cat.save()
-        Review(score = 1, name = "Good!", category = cat.id).save()
+        Review{score = 1; name = "Good!"; category = cat.id; count = 1;date= LocalDate.now()}.save()
         _get<VirtualList<ReviewWithCategory>>().expectRows(1)
     }
 
