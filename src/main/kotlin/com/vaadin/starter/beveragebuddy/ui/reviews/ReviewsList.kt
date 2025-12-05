@@ -26,11 +26,12 @@ import com.vaadin.flow.data.provider.Query
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.ReviewWithCategory
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.ReviewWithCategory
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.db
 import com.vaadin.starter.beveragebuddy.backend.ktorm.reviews
+import com.vaadin.starter.beveragebuddy.backend.ktorm.setFilterText
 import com.vaadin.starter.beveragebuddy.backend.setFilterText
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar

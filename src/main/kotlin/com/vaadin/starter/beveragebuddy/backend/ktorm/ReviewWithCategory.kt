@@ -39,7 +39,8 @@ fun QueryDataProvider<ReviewWithCategory>.setFilterText(filter: String?) {
         setFilter(null)
     } else {
         val normalizedFilter: String = filter.trim().lowercase() + "%"
-        val c = Categories.name.ilike(normalizedFilter) or
+        val c = Reviews.name.ilike(normalizedFilter) or
+                Categories.name.ilike(normalizedFilter) or
                Reviews.score.cast(VarcharSqlType).ilike(normalizedFilter) or
                 Reviews.count.cast(VarcharSqlType).ilike(normalizedFilter)
         setFilter(c)
