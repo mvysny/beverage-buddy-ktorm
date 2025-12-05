@@ -20,10 +20,6 @@ JavaScript code in this project. We use Vaadin to avoid touching JavaScript afte
 
 See the [online demo](https://v-herd.eu/beverage-buddy-ktorm/).
 
-# ALPHA
-
-There's a blocker bug preventing Vaadin to run its validations properly: [HV-2018](https://hibernate.atlassian.net/browse/HV-2018).
-
 # Documentation
 
 Please see the [Vaadin Boot](https://github.com/mvysny/vaadin-boot#preparing-environment) documentation
