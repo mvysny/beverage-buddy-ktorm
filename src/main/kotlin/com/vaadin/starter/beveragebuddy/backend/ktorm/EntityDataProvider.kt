@@ -60,6 +60,12 @@ class EntityDataProvider<T: Entity<T>>(val table: Table<T>) : AbstractBackEndDat
         refreshAll()
     }
 
+    /**
+     * Converts this data provider to one which accepts a [String] filter value. The string filter
+     * is converted via [filterConverter] to a ktorm where clause.
+     * @param filterConverter converts String filter to a WHERE clause.
+     * @return [DataProvider]
+     */
     fun withStringFilter(filterConverter: SerializableFunction<String, ColumnDeclaring<Boolean>?>): DataProvider<T, String> {
         return withConvertedFilter { filter: String? ->
             val postProcessedFilter = filter?.trim() ?: ""
