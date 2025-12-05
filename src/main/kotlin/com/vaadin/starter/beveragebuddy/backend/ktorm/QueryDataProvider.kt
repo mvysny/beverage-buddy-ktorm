@@ -4,24 +4,9 @@ import com.vaadin.flow.data.provider.AbstractBackEndDataProvider
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.Query
-import com.vaadin.flow.data.provider.SortDirection
 import com.vaadin.flow.function.SerializableFunction
 import org.ktorm.database.Database
-import org.ktorm.dsl.QueryRowSet
-import org.ktorm.dsl.QuerySource
-import org.ktorm.dsl.and
-import org.ktorm.dsl.asc
-import org.ktorm.dsl.desc
-import org.ktorm.dsl.from
-import org.ktorm.dsl.limit
-import org.ktorm.dsl.map
-import org.ktorm.dsl.offset
-import org.ktorm.dsl.orderBy
-import org.ktorm.dsl.select
-import org.ktorm.dsl.where
-import org.ktorm.entity.count
-import org.ktorm.entity.filter
-import org.ktorm.entity.sequenceOf
+import org.ktorm.dsl.*
 import org.ktorm.expression.OrderByExpression
 import org.ktorm.schema.ColumnDeclaring
 import java.util.stream.Stream
@@ -41,7 +26,7 @@ import java.util.stream.Stream
  * @param rowMapper converts [QueryRowSet] to the bean [T]
  * @param T the bean type returned by this data provider.
  */
-class QueryDataProvider<T>(val query: (Database) -> org.ktorm.dsl.Query, val rowMapper: (QueryRowSet) -> T) : AbstractBackEndDataProvider<T, ColumnDeclaring<Boolean>>(),
+class QueryDataProvider<T>(val querySource: (Database) -> QuerySource, val query: (QuerySource) -> org.ktorm.dsl.Query, val rowMapper: (QueryRowSet) -> T) : AbstractBackEndDataProvider<T, ColumnDeclaring<Boolean>>(),
     ConfigurableFilterDataProvider<T, ColumnDeclaring<Boolean>, ColumnDeclaring<Boolean>> {
 
     private var filter: ColumnDeclaring<Boolean>? = null
@@ -56,29 +41,38 @@ class QueryDataProvider<T>(val query: (Database) -> org.ktorm.dsl.Query, val row
 
     private val Query<T, ColumnDeclaring<Boolean>>.orderBy: List<OrderByExpression> get() {
         return sortOrders.map { sortOrder ->
-            val column = table[sortOrder.sorted]
-            if (sortOrder.direction == SortDirection.ASCENDING) column.asc() else column.desc()
+            throw RuntimeException("Unsupported")
+//            val column = querySource(null).expression.get[sortOrder.sorted]
+//            if (sortOrder.direction == SortDirection.ASCENDING) column.asc() else column.desc()
         }
     }
 
     override fun fetchFromBackEnd(query: Query<T, ColumnDeclaring<Boolean>>): Stream<T> = db {
-        var q = database.from(table).select()
+        var q: org.ktorm.dsl.Query = query(querySource(database))
         val filter = calculateFilter(query)
         if (filter != null) {
             q = q.where(filter)
         }
         q = q.offset(query.offset).limit(query.limit).orderBy(query.orderBy)
-        val result = q.map { table.createEntity(it) }
+        val result = q.map(rowMapper)
         result.stream()
     }
 
     override fun sizeInBackEnd(query: Query<T, ColumnDeclaring<Boolean>>): Int = db {
-        var seq = database.sequenceOf(table)
+        var q: org.ktorm.dsl.Query = querySource(database).select(count())
         val filter = calculateFilter(query)
         if (filter != null) {
-            seq = seq.filter { filter }
+            q = q.where(filter)
         }
-        seq.count()
+        val rowSet = q.rowSet
+
+        if (rowSet.size() == 1) {
+            check(rowSet.next())
+            rowSet.getInt(1)
+        } else {
+            val (sql, _) = database.formatExpression(q.expression, beautifySql = true)
+            throw IllegalStateException("Expected 1 row but ${rowSet.size()} returned from sql: \n\n$sql")
+        }
     }
 
     override fun setFilter(filter: ColumnDeclaring<Boolean>?) {
