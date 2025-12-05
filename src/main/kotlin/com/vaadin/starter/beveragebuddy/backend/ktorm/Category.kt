@@ -18,7 +18,7 @@ object Categories : Table<Category>("category") {
     fun deleteAll() {
         db {
             database.update(Reviews) {
-                set(Reviews.category, null)
+                set(it.category, null)
             }
             database.deleteAll(Categories)
         }
