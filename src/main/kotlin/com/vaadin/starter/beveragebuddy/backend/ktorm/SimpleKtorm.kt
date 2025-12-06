@@ -3,6 +3,7 @@ package com.vaadin.starter.beveragebuddy.backend.ktorm
 import jakarta.validation.Validation
 import jakarta.validation.Validator
 import org.ktorm.database.Database
+import org.ktorm.dsl.deleteAll
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.single
@@ -28,4 +29,9 @@ fun <E : Entity<E>> Table<E>.findAll(): List<E> = db {
 }
 fun <E : Entity<E>> Table<E>.single(): E = db {
     database.sequenceOf(this@single).single()
+}
+fun <E : Entity<E>> Table<E>.deleteAll() {
+    db {
+        database.deleteAll(this@deleteAll)
+    }
 }
