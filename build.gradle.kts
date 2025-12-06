@@ -37,7 +37,6 @@ dependencies {
     implementation(libs.karibu.dsl)
     implementation(libs.vaadin.boot)
 
-    implementation(libs.vok.db)
     implementation(libs.ktorm.core)
     implementation(libs.ktorm.postgresql)
     implementation(libs.hikaricp)
