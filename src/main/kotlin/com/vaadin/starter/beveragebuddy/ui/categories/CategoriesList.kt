@@ -32,14 +32,11 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.dataProvider
 import com.vaadin.starter.beveragebuddy.ui.*
-import eu.vaadinonkotlin.vaadin.setSortProperty
-import eu.vaadinonkotlin.vaadin.vokdb.dataProvider
-import org.ktorm.dsl.like
 import org.ktorm.support.postgresql.ilike
 
 /**

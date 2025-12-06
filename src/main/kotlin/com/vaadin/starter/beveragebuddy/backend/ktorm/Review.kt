@@ -53,5 +53,15 @@ interface Review : ValidatableEntity<Review> {
 
     override val idColumn: Column<*> get() = Reviews.id
 
-    companion object : Entity.Factory<Review>()
+    companion object : Entity.Factory<Review>() {
+        /**
+         * Computes the total sum of [count] for all reviews belonging to given [categoryId].
+         * @return the total sum, 0 or greater.
+         */
+        fun getTotalCountForReviewsInCategory(categoryId: Long): Long = db {
+            sql("select sum(r.count) from Review r where r.category = ?",
+                { setLong(1, categoryId) }) { it.getLong(1) }
+                .firstOrNull() ?: 0L
+        }
+    }
 }
