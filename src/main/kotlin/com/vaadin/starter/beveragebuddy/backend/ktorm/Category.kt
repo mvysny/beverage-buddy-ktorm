@@ -38,7 +38,7 @@ interface Category : ValidatableEntity<Category> {
     @get:NotBlank
     var name: String
 
-    override val idColumn: Column<*> get() = Categories.id
+    override val table: Table<Category> get() = Categories
 
     companion object : Entity.Factory<Category>() {
         fun findByName(name: String): Category? =

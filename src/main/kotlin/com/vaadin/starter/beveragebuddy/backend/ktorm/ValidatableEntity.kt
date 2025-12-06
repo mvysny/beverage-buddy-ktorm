@@ -4,7 +4,6 @@ import jakarta.validation.ConstraintViolationException
 import org.ktorm.entity.Entity
 import org.ktorm.entity.add
 import org.ktorm.entity.sequenceOf
-import org.ktorm.schema.Column
 import org.ktorm.schema.Table
 
 /**
@@ -12,7 +11,7 @@ import org.ktorm.schema.Table
  * JSR303 `jakarta.validation`, which means that the POJOs are directly compatible with
  * Vaadin's BeanValidationBinder.
  */
-interface ValidatableEntity<E : Entity<E>> : Entity<E> {
+interface ValidatableEntity<E : ValidatableEntity<E>> : Entity<E> {
 
     /**
      * Validates current entity. The Java JSR303 validation is performed by default: just add `jakarta.validation`
@@ -32,7 +31,10 @@ interface ValidatableEntity<E : Entity<E>> : Entity<E> {
         }
     }
 
-    val idColumn: Column<*>
+    /**
+     * The table of this entity.
+     */
+    val table: Table<E>
 
     /**
      * Checks whether this entity is valid: calls [validate] and returns false if [ConstraintViolationException] is thrown.
@@ -45,28 +47,38 @@ interface ValidatableEntity<E : Entity<E>> : Entity<E> {
             false
         }
 
+    /**
+     * Saves changes done in this entity to the database, or creates a new row if the entity has no ID.
+     */
     fun save(validate: Boolean = true) {
         if (validate) {
             validate()
         }
-        val attached = get(idColumn.name) != null
-        if (attached) {
+        val hasId = table.primaryKeys.any { get(it.name) != null }
+        if (hasId) {
             flushChanges()
         } else {
             create(false)
         }
     }
 
+    /**
+     * Creates a new row. Shouldn't be called if the entity already has an ID.
+     */
     fun create(validate: Boolean = true) {
         if (validate) {
             validate()
         }
-        db {
-            database.sequenceOf(idColumn.table as Table<E>).add(this@ValidatableEntity as E)
-        }
+        table.create(this as E)
     }
 }
 
+/**
+ * Creates new row in table. Example of use:
+ * ```
+ * Categories.create(Category { name = "foo" })
+ * ```
+ */
 fun <E : ValidatableEntity<E>> Table<E>.create(entity: E): E {
     entity.validate()
     db {

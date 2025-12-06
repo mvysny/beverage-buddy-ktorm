@@ -51,7 +51,7 @@ interface Review : ValidatableEntity<Review> {
     @get:Max(99)
     var count: Int
 
-    override val idColumn: Column<*> get() = Reviews.id
+    override val table: Table<Review> get() = Reviews
 
     companion object : Entity.Factory<Review>() {
         /**
