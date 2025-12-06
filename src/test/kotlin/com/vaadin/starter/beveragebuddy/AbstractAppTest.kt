@@ -4,6 +4,9 @@ import com.github.mvysny.kaributesting.v10.MockVaadin
 import com.github.mvysny.kaributesting.v10.Routes
 import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
+import com.vaadin.starter.beveragebuddy.backend.ktorm.deleteAll
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -26,5 +29,5 @@ abstract class AbstractAppTest {
     @AfterEach fun teardownVaadin() { MockVaadin.tearDown() }
 
     // it's a good practice to clear up the db before every test, to start every test with a predefined state.
-    @BeforeEach @AfterEach fun cleanupDb() { Category.deleteAll(); Review.deleteAll() }
+    @BeforeEach @AfterEach fun cleanupDb() { Categories.deleteAll(); Reviews.deleteAll() }
 }
