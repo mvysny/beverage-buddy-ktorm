@@ -32,7 +32,6 @@ import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.db
 import com.vaadin.starter.beveragebuddy.backend.ktorm.reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.setFilterText
-import com.vaadin.starter.beveragebuddy.backend.setFilterText
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
 import com.vaadin.starter.beveragebuddy.ui.toolbarView

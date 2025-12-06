@@ -2,8 +2,6 @@ package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributesting.v10.MockVaadin
 import com.github.mvysny.kaributesting.v10.Routes
-import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.deleteAll
