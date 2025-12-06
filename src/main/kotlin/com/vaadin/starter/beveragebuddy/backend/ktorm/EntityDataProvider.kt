@@ -21,6 +21,7 @@ import kotlin.reflect.KProperty1
  * val dp = Employees.dataProvider
  * dp.setFilter(Employees.name.ilike(normalizedFilter))
  * ```
+ * To enable sorting in a Grid, set the [Column.name] as a key to Vaadin column.
  * @param table the table to load the entities from
  * @param T entity type
  */
