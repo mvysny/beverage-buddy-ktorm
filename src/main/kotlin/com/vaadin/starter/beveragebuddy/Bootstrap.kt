@@ -1,7 +1,6 @@
 package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
-import com.gitlab.mvysny.jdbiorm.JdbiOrm
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.page.AppShellConfigurator
@@ -11,12 +10,10 @@ import com.vaadin.flow.server.ServiceInitEvent
 import com.vaadin.flow.server.VaadinServiceInitListener
 import com.vaadin.flow.server.VaadinSession
 import com.vaadin.flow.theme.Theme
-import eu.vaadinonkotlin.VaadinOnKotlin
 import com.vaadin.starter.beveragebuddy.backend.ktorm.DemoData
 import com.vaadin.starter.beveragebuddy.backend.ktorm.SimpleKtorm
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import eu.vaadinonkotlin.closeQuietly
 import org.flywaydb.core.Flyway
 import org.h2.Driver
 import org.slf4j.LoggerFactory
@@ -24,7 +21,6 @@ import jakarta.servlet.ServletContextEvent
 import jakarta.servlet.ServletContextListener
 import jakarta.servlet.annotation.WebListener
 import org.ktorm.database.Database
-import javax.sql.DataSource
 
 /**
  * Boots the app:
@@ -50,17 +46,12 @@ class Bootstrap: ServletContextListener {
             password = ""
         }
         dataSource = HikariDataSource(cfg)
-        JdbiOrm.setDataSource(dataSource)
-        SimpleKtorm.database = Database.Companion.connect(dataSource)
-
-        // Initializes the VoK framework
-        log.info("Initializing VaadinOnKotlin")
-        VaadinOnKotlin.init()
+        SimpleKtorm.database = Database.connect(dataSource)
 
         // Makes sure the database is up-to-date
         log.info("Running DB migrations")
         val flyway: Flyway = Flyway.configure()
-            .dataSource(JdbiOrm.getDataSource())
+            .dataSource(dataSource)
             .load()
         flyway.migrate()
 
@@ -72,8 +63,6 @@ class Bootstrap: ServletContextListener {
 
     override fun contextDestroyed(sce: ServletContextEvent?) {
         log.info("Shutting down");
-        log.info("Destroying VaadinOnKotlin")
-        VaadinOnKotlin.destroy()
         log.info("Closing database connections")
         dataSource.close()
         log.info("Shutdown complete")

@@ -14,12 +14,18 @@ karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.4.0"
 flyway = "org.flywaydb:flyway-core:10.15.2"
 h2 = "com.h2database:h2:2.2.224"
 hikaricp = "com.zaxxer:HikariCP:5.1.0"
-vok-rest-server = { module = "eu.vaadinonkotlin:vok-rest", version.ref = "vok" }
 vok-rest-client = { module = "eu.vaadinonkotlin:vok-rest-client", version.ref = "vok" }
 ktorm-core = "org.ktorm:ktorm-core:4.1.1"
 ktorm-postgresql = "org.ktorm:ktorm-support-postgresql:4.1.1"
 junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
 hibernate-validator = "org.hibernate.validator:hibernate-validator:9.1.0.Final"
+gson-gson = "com.google.code.gson:gson:2.13.2"   # com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
+gson-javatime = "com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2"
+# Javalin 6 doesn't support Jetty 12; upgrade only after Javalin 7 is released.
+javalin = "io.javalin:javalin:5.6.3"   # io.javalin:javalin; https://repo1.maven.org/maven2/io/javalin/javalin/
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }
+
+[bundles]
+gson = ["gson-gson", "gson-javatime"]   # workaround for https://github.com/google/gson/issues/1059

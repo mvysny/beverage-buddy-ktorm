@@ -51,7 +51,12 @@ dependencies {
     implementation(libs.h2) // remove this and replace it with a database driver of your choice.
 
     // REST
-    implementation(libs.vok.rest.server)
+    api(libs.javalin) {
+        exclude(group = "org.eclipse.jetty")
+        exclude(group = "org.eclipse.jetty.websocket")
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+    implementation(libs.bundles.gson)
 
     // testing
     testImplementation(libs.karibu.testing)

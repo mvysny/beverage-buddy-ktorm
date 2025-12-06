@@ -1,24 +1,32 @@
 package com.vaadin.starter.beveragebuddy.backend
 
+import com.fatboyindustrial.gsonjavatime.Converters
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.findAll
-import eu.vaadinonkotlin.rest.*
 import io.javalin.Javalin
+import io.javalin.json.JavalinGson
 import jakarta.servlet.annotation.WebServlet
 import jakarta.servlet.http.HttpServlet
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.time.LocalDate
 
+val gson: Gson = GsonBuilder().registerJavaTimeAdapters().create()
+private fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
+    Converters.registerAll(this)
+}
+
 /**
  * Provides access to person list. To test, just run `curl http://localhost:8080/rest/categories`
  */
 @WebServlet(urlPatterns = ["/rest/*"], name = "JavalinRestServlet", asyncSupported = false)
 class JavalinRestServlet : HttpServlet() {
-    val javalin = Javalin.createStandalone { it.gsonMapper(VokRest.gson) } .apply {
+    val javalin = Javalin.createStandalone { it.jsonMapper(JavalinGson(gson)) } .apply {
         get("/rest/categories") { ctx -> ctx.json(Categories.findAll().map { RestCategory.of(it) }) }
         get("/rest/reviews") { ctx -> ctx.json(Reviews.findAll().map { RestReview.of(it) }) }
     }.javalinServlet()
