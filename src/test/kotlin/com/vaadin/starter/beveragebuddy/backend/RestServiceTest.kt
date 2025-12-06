@@ -1,16 +1,10 @@
 package com.vaadin.starter.beveragebuddy.backend
 
 import com.github.mvysny.kaributesting.v10.expectList
-import com.github.vokorm.KEntity
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
+import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import eu.vaadinonkotlin.restclient.*
-import jakarta.validation.constraints.Max
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.PastOrPresent
-import jakarta.validation.constraints.Size
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
 import org.junit.jupiter.api.*
@@ -76,6 +70,13 @@ class RestServiceTest : AbstractAppTest() {
         expectList() { client.getAllReviews() }
     }
 
+    @Test fun `reviews retrieval`() {
+        val cat = Category{name = "Beers"}
+        cat.save()
+        val r = Review{score = 1; name = "Good!"; category = cat.id; count = 1;date = LocalDate.now()}
+        r.save()
+        expectList(RestReview.of(r)) { client.getAllReviews() }
+    }
     @Test fun `404`() {
         assertThrows<FileNotFoundException> {
             client.nonexistingEndpoint()
