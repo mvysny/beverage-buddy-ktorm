@@ -8,20 +8,25 @@ import com.vaadin.flow.data.provider.SortDirection
 import com.vaadin.flow.function.SerializableFunction
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.ktorm.entity.Entity
 import org.ktorm.expression.OrderByExpression
+import org.ktorm.schema.Column
 import org.ktorm.schema.ColumnDeclaring
+import org.ktorm.schema.Table
+import org.ktorm.support.postgresql.ilike
 import java.util.stream.Stream
 
 /**
  * Loads data from a ktorm [Query]. Mostly used for more complex stuff like joins; for selecting
  * entities use [EntityDataProvider]. Example of use:
  * ```
- * val dp = QueryDataProvider({ it
- *   .from(Employees)
- *   .leftJoin(Departments, on = Employees.departmentId eq Departments.id))
- *   .select(Employees.name, Departments.name)
- * }, { row -> Names(row[Employees.name], row[Departments.name]) })
- * TODO dp.filter
+ * val dp = QueryDataProvider(
+ *   { it.from(Reviews).leftJoin(Categories, on = Reviews.category eq Categories.id) },
+ *   { it.select(*Reviews.columns.toTypedArray(), Categories.name)},
+ *   { ReviewWithCategory.from(it) })
+ * val filter = Reviews.name.ilike(normalizedFilter) or
+ *   Categories.name.ilike(normalizedFilter)
+ * dp.setFilter(filter)
  * ```
  * @param query creates [org.ktorm.dsl.Query]
  * @param rowMapper converts [QueryRowSet] to the bean [T]
@@ -42,7 +47,7 @@ class QueryDataProvider<T>(val querySource: (Database) -> QuerySource, val query
 
     private val Query<T, ColumnDeclaring<Boolean>>.orderBy: List<OrderByExpression> get() {
         return sortOrders.map { sortOrder ->
-            // @TODO this only takes the first database into account!
+            // @TODO this only takes the first table into account!
             val column = querySource(SimpleKtorm.database).sourceTable[sortOrder.sorted]
             if (sortOrder.direction == SortDirection.ASCENDING) column.asc() else column.desc()
         }
@@ -83,7 +88,8 @@ class QueryDataProvider<T>(val querySource: (Database) -> QuerySource, val query
 
     /**
      * Converts this data provider to one which accepts a [String] filter value. The string filter
-     * is converted via [filterConverter] to a ktorm where clause.
+     * is converted via [filterConverter] to a KTORM where clause. Perfect for using this data provider
+     * with ComboBox (or other field which allows text-based search).
      * @param filterConverter converts String filter to a WHERE clause.
      * @return [DataProvider]
      */
@@ -96,3 +102,19 @@ class QueryDataProvider<T>(val querySource: (Database) -> QuerySource, val query
         }
     }
 }
+
+/**
+ * Returns a [DataProvider] which accepts a [String] filter; when a non-blank String is provided,
+ * a `col ilike string%` where clause is added to the query.
+ * Example of use:
+ * ```
+ * setItems(Categories.dataProvider.withStringFilterOn(Categories.name))
+ * ```
+ * @param column the [Table] column present in the select returning [T]
+ * @param T the bean which holds the data provider values.
+ * @return [DataProvider] which matches filter string against the value of given [column].
+ */
+fun <T> QueryDataProvider<T>.withStringFilterOn(column: Column<String>): DataProvider<T, String> =
+    withStringFilter {
+        column.ilike("${it.trim()}%")
+    }

@@ -19,7 +19,7 @@ import kotlin.reflect.KProperty1
  * Loads entities [T] from given [table]. Example of use:
  * ```
  * val dp = Employees.dataProvider
- * TODO filter
+ * dp.setFilter(Employees.name.ilike(normalizedFilter))
  * ```
  * @param table the table to load the entities from
  * @param T entity type
@@ -71,7 +71,8 @@ class EntityDataProvider<T: Entity<T>>(val table: Table<T>) : AbstractBackEndDat
 
     /**
      * Converts this data provider to one which accepts a [String] filter value. The string filter
-     * is converted via [filterConverter] to a ktorm where clause.
+     * is converted via [filterConverter] to a KTORM where clause. Perfect for using this data provider
+     * with ComboBox (or other field which allows text-based search).
      * @param filterConverter converts String filter to a WHERE clause.
      * @return [DataProvider]
      */

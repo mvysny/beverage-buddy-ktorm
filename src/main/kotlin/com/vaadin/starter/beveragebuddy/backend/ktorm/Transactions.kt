@@ -24,12 +24,18 @@ fun <R> db(block: KtormContext.() -> R): R =
 
 data class KtormContext(val transaction: Transaction, val database: Database)
 
-// todo document
+/**
+ * Runs a SQL update statement, or a DDL SQL script. Beware of SQL injections etc.
+ * @param ddl the DDL SQL script to run.
+ */
 fun Transaction.ddl(ddl: String) {
     connection.prepareStatement(ddl).executeUpdate()
 }
 
-// todo document
+/**
+ * Runs a SQL update statement, or a DDL SQL script. Beware of SQL injections etc.
+ * @param ddl the DDL SQL script to run.
+ */
 fun KtormContext.ddl(ddl: String) {
     transaction.ddl(ddl)
 }
@@ -37,9 +43,7 @@ fun KtormContext.ddl(ddl: String) {
 /**
  * Runs native SQL select. Make sure to defend against SQL injection, etc etc. Example:
  * ```
-* sql("select sum(r.count) from Review r where r.category = ?",
-* { setLong(1, categoryId) }) { it.getLong(1) }
-* .firstOrNull() ?: 0L
+ * sql("select sum(r.count) from Review r where r.category = ?", { setLong(1, categoryId) }) { it.getLong(1) } .firstOrNull() ?: 0L
  * ```
  * @param sql the SQL to run.
  * @param parameters (optional) sets parameters to [PreparedStatement]
