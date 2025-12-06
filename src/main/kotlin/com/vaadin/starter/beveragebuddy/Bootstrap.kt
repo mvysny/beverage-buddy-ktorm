@@ -12,7 +12,7 @@ import com.vaadin.flow.server.VaadinServiceInitListener
 import com.vaadin.flow.server.VaadinSession
 import com.vaadin.flow.theme.Theme
 import eu.vaadinonkotlin.VaadinOnKotlin
-import com.vaadin.starter.beveragebuddy.backend.DemoData
+import com.vaadin.starter.beveragebuddy.backend.ktorm.DemoData
 import com.vaadin.starter.beveragebuddy.backend.ktorm.SimpleKtorm
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource

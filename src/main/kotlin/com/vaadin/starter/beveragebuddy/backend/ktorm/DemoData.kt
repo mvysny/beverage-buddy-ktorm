@@ -1,6 +1,5 @@
-package com.vaadin.starter.beveragebuddy.backend
+package com.vaadin.starter.beveragebuddy.backend.ktorm
 
-import com.github.vokorm.db
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -106,13 +105,13 @@ internal object DemoData {
 
     fun createDemoData() = db {
         // generate categories
-        BEVERAGES.values.distinct().forEach { name -> Category(name = name).save() }
+        BEVERAGES.values.distinct().forEach { name -> Category{this.name = name}.save() }
 
         /// generate reviews
         val reviewCount: Int = 20 + Random.nextInt(30)
         val beverages: List<MutableMap.MutableEntry<String, String>> = BEVERAGES.entries.toList()
 
-        for (i in 0 until reviewCount) {
+        repeat(reviewCount) {
             val review = Review()
             val beverage: MutableMap.MutableEntry<String, String> = beverages.random()
             val category: Category = Category.getByName(beverage.value)
