@@ -19,6 +19,7 @@ vok-rest-client = { module = "eu.vaadinonkotlin:vok-rest-client", version.ref = 
 ktorm-core = "org.ktorm:ktorm-core:4.1.1"
 ktorm-postgresql = "org.ktorm:ktorm-support-postgresql:4.1.1"
 junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
+hibernate-validator = "org.hibernate.validator:hibernate-validator:9.1.0.Final"
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }
