@@ -1,6 +1,5 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
-import com.github.vokorm.KEntity
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.binder.Result
 import com.vaadin.flow.data.binder.ValueContext
