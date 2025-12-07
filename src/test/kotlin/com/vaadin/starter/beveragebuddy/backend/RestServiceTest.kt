@@ -7,10 +7,13 @@ import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import eu.vaadinonkotlin.restclient.*
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.util.resource.Resource
 import org.junit.jupiter.api.*
 import java.io.FileNotFoundException
 import java.net.http.HttpClient
+import java.net.URI
 import java.time.LocalDate
+import java.nio.file.Path
 
 /**
  * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
@@ -44,8 +47,7 @@ class RestServiceTest : AbstractAppTest() {
         private lateinit var server: Server
         @BeforeAll @JvmStatic fun startJavalin() {
             val ctx = WebAppContext()
-            // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
-            ctx.baseResource = ctx.resourceFactory.newClassLoaderResource("java/lang/String.class")
+            ctx.baseResource = EmptyResource()
             ctx.addServlet(JavalinRestServlet::class.java, "/rest/*")
             server = Server(9876)
             server.handler = ctx
@@ -82,4 +84,14 @@ class RestServiceTest : AbstractAppTest() {
             client.nonexistingEndpoint()
         }
     }
+}
+
+class EmptyResource : Resource() {
+    override fun getPath(): Path? = null
+    override fun isDirectory(): Boolean = true
+    override fun isReadable(): Boolean = true
+    override fun getURI(): URI? = null
+    override fun getName(): String = "EmptyResource"
+    override fun getFileName(): String? = null
+    override fun resolve(subUriPath: String?): Resource? = null
 }
