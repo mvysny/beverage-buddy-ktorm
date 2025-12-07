@@ -13,7 +13,7 @@ karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.4.3"
 karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.4.0"
 flyway = "org.flywaydb:flyway-core:11.18.0"
 h2 = "com.h2database:h2:2.2.224"
-hikaricp = "com.zaxxer:HikariCP:5.1.0"
+hikaricp = "com.zaxxer:HikariCP:7.0.2"
 vok-rest-client = { module = "eu.vaadinonkotlin:vok-rest-client", version.ref = "vok" }
 ktorm-core = "org.ktorm:ktorm-core:4.1.1"
 ktorm-postgresql = "org.ktorm:ktorm-support-postgresql:4.1.1"
