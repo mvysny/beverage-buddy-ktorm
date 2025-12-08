@@ -61,9 +61,7 @@ dependencies {
     // testing
     testImplementation(libs.karibu.testing)
     testImplementation(libs.junit)
-    testImplementation(libs.vok.rest.client)
-    testImplementation("io.ktor:ktor-client-core:3.3.3")
-    testImplementation("io.ktor:ktor-client-cio:3.3.3")
+    testImplementation(libs.bundles.ktor)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

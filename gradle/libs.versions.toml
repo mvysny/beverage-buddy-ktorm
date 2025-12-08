@@ -2,7 +2,7 @@
 vaadin = "24.9.6"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
 slf4j = "2.0.17"
-vok = "0.18.1"
+ktor = "3.3.3"
 
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
@@ -14,7 +14,6 @@ karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.4.0"
 flyway = "org.flywaydb:flyway-core:11.18.0"
 h2 = "com.h2database:h2:2.2.224"
 hikaricp = "com.zaxxer:HikariCP:7.0.2"
-vok-rest-client = { module = "eu.vaadinonkotlin:vok-rest-client", version.ref = "vok" }
 ktorm-core = "org.ktorm:ktorm-core:4.1.1"
 ktorm-postgresql = "org.ktorm:ktorm-support-postgresql:4.1.1"
 junit = "org.junit.jupiter:junit-jupiter-engine:6.0.1"
@@ -23,9 +22,12 @@ gson-gson = "com.google.code.gson:gson:2.13.2"   # com.google.code.gson:gson; ht
 gson-javatime = "com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2"
 # Javalin 6 doesn't support Jetty 12; upgrade only after Javalin 7 is released.
 javalin = "io.javalin:javalin:5.6.3"   # io.javalin:javalin; https://repo1.maven.org/maven2/io/javalin/javalin/
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor"}
+ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor"}
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }
 
 [bundles]
 gson = ["gson-gson", "gson-javatime"]   # workaround for https://github.com/google/gson/issues/1059
+ktor = ["ktor-client-core", "ktor-client-java"]

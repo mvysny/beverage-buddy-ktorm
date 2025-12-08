@@ -1,5 +1,6 @@
 package com.vaadin.starter.beveragebuddy.backend
 
+import com.fatboyindustrial.gsonjavatime.Converters
 import com.github.mvysny.kaributesting.v10.expectList
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -7,7 +8,7 @@ import com.google.gson.reflect.TypeToken
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
-import eu.vaadinonkotlin.restclient.registerJavaTimeAdapters
+import io.ktor.client.HttpClient
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -20,6 +21,9 @@ import java.net.URI
 import java.nio.file.Path
 import java.time.LocalDate
 
+private fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
+    Converters.registerAll(this)
+}
 private val gson: Gson = GsonBuilder().registerJavaTimeAdapters().create()
 private inline suspend fun <reified T> HttpResponse.jsonArray(): List<T> {
     val type = TypeToken.getParameterized(List::class.java, T::class.java).type
@@ -30,7 +34,7 @@ class PersonRestClient(val baseUrl: String) {
     init {
         require(!baseUrl.endsWith("/")) { "$baseUrl must not end with a slash" }
     }
-    private val client = io.ktor.client.HttpClient {
+    private val client = HttpClient {
         expectSuccess = true
     }
     fun getAllCategories(): List<RestCategory> = runBlocking {
