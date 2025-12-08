@@ -12,6 +12,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.runBlocking
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
@@ -27,7 +28,7 @@ private fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
 private val gson: Gson = GsonBuilder().registerJavaTimeAdapters().create()
 private inline suspend fun <reified T> HttpResponse.jsonArray(): List<T> {
     val type = TypeToken.getParameterized(List::class.java, T::class.java).type
-    return gson.fromJson<List<T>>(bodyAsText(), type)
+    return gson.fromJson<List<T>>(bodyAsChannel().toInputStream().reader().buffered(), type)
 }
 
 class PersonRestClient(val baseUrl: String) {
