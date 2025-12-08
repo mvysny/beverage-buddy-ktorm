@@ -48,7 +48,7 @@ class PersonRestClient(val baseUrl: String) {
         response.jsonArray<RestReview>()
     }
     fun nonexistingEndpoint() = runBlocking {
-        client.get("${baseUrl}/nonexisting").bodyAsText()
+        client.get("$baseUrl/nonexisting").bodyAsText()
     }
 }
 
