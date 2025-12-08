@@ -1,40 +1,49 @@
 package com.vaadin.starter.beveragebuddy.backend
 
 import com.github.mvysny.kaributesting.v10.expectList
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
-import eu.vaadinonkotlin.restclient.*
+import eu.vaadinonkotlin.restclient.registerJavaTimeAdapters
+import io.ktor.client.plugins.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import kotlinx.coroutines.runBlocking
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.util.resource.Resource
 import org.junit.jupiter.api.*
-import java.io.FileNotFoundException
-import java.net.http.HttpClient
 import java.net.URI
-import java.time.LocalDate
 import java.nio.file.Path
+import java.time.LocalDate
 
-/**
- * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
- * [vok-rest-client](https://github.com/mvysny/vaadin-on-kotlin/tree/master/vok-rest-client) module for more details.
- */
+private val gson: Gson = GsonBuilder().registerJavaTimeAdapters().create()
+private inline suspend fun <reified T> HttpResponse.jsonArray(): List<T> {
+    val type = TypeToken.getParameterized(List::class.java, T::class.java).type
+    return gson.fromJson<List<T>>(bodyAsText(), type)
+}
+
 class PersonRestClient(val baseUrl: String) {
     init {
         require(!baseUrl.endsWith("/")) { "$baseUrl must not end with a slash" }
     }
-    private val client: HttpClient = VokRestClient.httpClient
-    fun getAllCategories(): List<RestCategory> {
-        val request = "$baseUrl/categories".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.jsonArray(RestCategory::class.java) }
+    private val client = io.ktor.client.HttpClient {
+        expectSuccess = true
     }
-    fun getAllReviews(): List<RestReview> {
-        val request = "$baseUrl/reviews".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.jsonArray(RestReview::class.java) }
+    fun getAllCategories(): List<RestCategory> = runBlocking {
+            val response = client.get("$baseUrl/categories")
+            response.jsonArray<RestCategory>()
+        }
+
+    fun getAllReviews(): List<RestReview> = runBlocking {
+        val response = client.get("$baseUrl/reviews")
+        response.jsonArray<RestReview>()
     }
-    fun nonexistingEndpoint() {
-        val request = "$baseUrl/nonexisting".buildUrl().buildRequest()
-        client.exec(request) { }
+    fun nonexistingEndpoint() = runBlocking {
+        client.get("${baseUrl}/nonexisting").bodyAsText()
     }
 }
 
@@ -80,7 +89,7 @@ class RestServiceTest : AbstractAppTest() {
         expectList(RestReview.of(r)) { client.getAllReviews() }
     }
     @Test fun `404`() {
-        assertThrows<FileNotFoundException> {
+        assertThrows<ClientRequestException> {
             client.nonexistingEndpoint()
         }
     }
