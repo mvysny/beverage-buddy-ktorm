@@ -61,7 +61,7 @@ class ReviewEditorForm : FormLayout(), EditorForm<Review> {
             setItems(Categories.dataProvider.withStringFilterOn(Categories.name))
 
             // bind the combo box to the Review::category field so that changes done by the user are stored.
-            bind(binder).toId(Reviews.id).bind(Reviews.category)
+            bind(binder).toId(Categories.id).bind(Reviews.category)
         }
         datePicker("Choose the date") {
             max = LocalDate.now()

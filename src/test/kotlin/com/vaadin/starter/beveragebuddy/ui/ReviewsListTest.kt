@@ -4,16 +4,23 @@ import com.github.mvysny.kaributesting.v10._click
 import com.github.mvysny.kaributesting.v10._expectNone
 import com.github.mvysny.kaributesting.v10._expectOne
 import com.github.mvysny.kaributesting.v10._get
+import com.github.mvysny.kaributesting.v10._value
+import com.github.mvysny.kaributesting.v23._getRowComponent
 import com.github.mvysny.kaributesting.v23.expectRows
+import com.github.mvysny.kaributools.navigateTo
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.virtuallist.VirtualList
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.ReviewWithCategory
+import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
+import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewsList
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import kotlin.test.expect
 
 class ReviewsListTest : AbstractAppTest() {
     @Test fun `no reviews initially`() {
@@ -39,5 +46,17 @@ class ReviewsListTest : AbstractAppTest() {
         _get<Button> { text = "Cancel" }._click()
 
         _expectNone<EditorDialogFrame<*>>()
+    }
+
+    @Test fun `edit existing review`() {
+        navigateTo<ReviewsList>()
+
+        val cat = Category{name = "Beers"}
+        cat.save()
+        Review{score = 1; name = "Good!"; category = cat.id; count = 1;date= LocalDate.now()}.save()
+        _get<VirtualList<ReviewWithCategory>>().expectRows(1)
+        _get<VirtualList<ReviewWithCategory>>()._getRowComponent(0)._get<Button>{ text = "Edit" } ._click()
+        _expectOne<EditorDialogFrame<*>>()
+        expect(cat) { _get<ComboBox<Category>> { label = "Choose a category" } ._value }
     }
 }

@@ -10,6 +10,7 @@ import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.singleOrNull
 import org.ktorm.schema.Column
 import org.ktorm.schema.Table
+import kotlin.reflect.KClass
 
 /**
  * Converts an entity to its ID and back. Useful for combo boxes which shows a list of entities as their options while being bound to a
@@ -17,7 +18,12 @@ import org.ktorm.schema.Table
  * @param T the type of the entity
  * @param ID the type of the ID field of the entity
  */
-class EntityToIdConverter<ID: Any, T: Entity<T>>(val idColumn: Column<ID>) : Converter<T?, ID?> {
+class EntityToIdConverter<ID: Any, T: Entity<T>>(val idColumn: Column<ID>, val entityClass: KClass<T>) : Converter<T?, ID?> {
+    init {
+        require(idColumn.table.entityClass == entityClass) {
+            "The idColumn $idColumn belongs to a table which produces ${idColumn.table.entityClass} but $entityClass was expected"
+        }
+    }
 
     override fun convertToModel(value: T?, context: ValueContext?): Result<ID?> =
         Result.ok(value?.get(idColumn.name) as ID?)
@@ -47,5 +53,5 @@ class EntityToIdConverter<ID: Any, T: Entity<T>>(val idColumn: Column<ID>) : Con
  * }
  * ```
  */
-fun <BEAN, ID: Any, ENTITY: Entity<ENTITY>> Binder.BindingBuilder<BEAN, ENTITY?>.toId(idColumn: Column<ID>): Binder.BindingBuilder<BEAN, ID?> =
-    withConverter(EntityToIdConverter(idColumn))
+inline fun <BEAN, ID: Any, reified ENTITY: Entity<ENTITY>> Binder.BindingBuilder<BEAN, ENTITY?>.toId(idColumn: Column<ID>): Binder.BindingBuilder<BEAN, ID?> =
+    withConverter(EntityToIdConverter(idColumn, ENTITY::class))
