@@ -2,8 +2,9 @@
 :coffee::tea::sake::baby_bottle::beer::cocktail::tropical_drink::wine_glass:
 
 This is a [Vaadin](https://vaadin.com/)+[Kotlin](https://kotlinlang.org/)+[Ktorm](https://www.ktorm.org/) example application,
-used to demonstrate features of the Vaadin Flow Java framework.
+used to demonstrate features of the Vaadin Java framework.
 A full-stack app: uses the H2 database instead of a dummy service. Requires Java 17+.
+Uses [ktorm-vaadin](https://github.com/mvysny/ktorm-vaadin).
 
 The Starter demonstrates the core Vaadin Flow concepts:
 * [Building UIs in Kotlin](https://github.com/mvysny/karibu-dsl) with components
