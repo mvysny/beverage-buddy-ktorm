@@ -1,5 +1,8 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
+import com.github.mvysny.ktormvaadin.ActiveEntity
+import com.github.mvysny.ktormvaadin.db
+import com.github.mvysny.ktormvaadin.sql
 import jakarta.validation.constraints.*
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
@@ -26,7 +29,7 @@ val Database.reviews get() = this.sequenceOf(Reviews)
  * @property category the beverage category [Category.id]. May be null if the category has been deleted.
  * @property count times tasted, 1..99
  */
-interface Review : ValidatableEntity<Review> {
+interface Review : ActiveEntity<Review> {
 
     var id: Long?
 

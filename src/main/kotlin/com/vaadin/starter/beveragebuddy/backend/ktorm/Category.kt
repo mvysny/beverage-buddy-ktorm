@@ -1,5 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
+import com.github.mvysny.ktormvaadin.ActiveEntity
+import com.github.mvysny.ktormvaadin.db
 import jakarta.validation.constraints.NotBlank
 import org.ktorm.database.Database
 import org.ktorm.dsl.deleteAll
@@ -32,7 +34,7 @@ val Database.categories get() = this.sequenceOf(Categories)
  * @property id
  * @property name the category name
  */
-interface Category : ValidatableEntity<Category> {
+interface Category : ActiveEntity<Category> {
     var id: Long?
 
     @get:NotBlank

@@ -2,14 +2,14 @@ package com.vaadin.starter.beveragebuddy.ui
 
 import com.github.mvysny.kaributesting.v10.*
 import com.github.mvysny.kaributools.navigateTo
+import com.github.mvysny.ktormvaadin.create
+import com.github.mvysny.ktormvaadin.findAll
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
-import com.vaadin.starter.beveragebuddy.backend.ktorm.create
-import com.vaadin.starter.beveragebuddy.backend.ktorm.findAll
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ class CategoriesListTest : AbstractAppTest() {
 
     @Test fun `grid lists all categories`() {
         // prepare testing data
-        Categories.create(Category { name = "Beers" })
+        Category { name = "Beers" } .create()
 
         // now the "Categories" list should be displayed. Look up the Grid and assert on its contents.
         val grid = _get<Grid<Category>>()

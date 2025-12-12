@@ -18,6 +18,8 @@ package com.vaadin.starter.beveragebuddy.ui.categories
 import com.github.mvysny.karibudsl.v10.*
 import com.github.mvysny.kaributools.ModifierKey.*
 import com.github.mvysny.kaributools.addShortcut
+import com.github.mvysny.ktormvaadin.dataProvider
+import com.github.mvysny.ktormvaadin.e
 import com.vaadin.flow.component.Key.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -33,7 +35,6 @@ import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
-import com.vaadin.starter.beveragebuddy.backend.ktorm.dataProvider
 import com.vaadin.starter.beveragebuddy.ui.*
 import org.ktorm.support.postgresql.ilike
 
@@ -65,7 +66,7 @@ class CategoriesList : KComposite() {
             header = h3()
             grid = grid(dataProvider) {
                 isExpand = true
-                columnFor(Category::name) {
+                columnFor(Category::name, key = Categories.name.e.key) {
                     setHeader("Category")
                 }
                 addColumn { it.getReviewCount() }.setHeader("Beverages")

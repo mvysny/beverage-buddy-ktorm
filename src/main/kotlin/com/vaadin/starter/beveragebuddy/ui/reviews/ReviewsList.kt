@@ -17,6 +17,7 @@ package com.vaadin.starter.beveragebuddy.ui.reviews
 
 import com.github.mvysny.karibudsl.v10.*
 import com.github.mvysny.karibudsl.v23.virtualList
+import com.github.mvysny.ktormvaadin.db
 import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.html.H3
 import com.vaadin.flow.component.html.Span
@@ -29,7 +30,6 @@ import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
 import com.vaadin.starter.beveragebuddy.backend.ktorm.ReviewWithCategory
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
-import com.vaadin.starter.beveragebuddy.backend.ktorm.db
 import com.vaadin.starter.beveragebuddy.backend.ktorm.reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.setFilterText
 import com.vaadin.starter.beveragebuddy.ui.MainLayout

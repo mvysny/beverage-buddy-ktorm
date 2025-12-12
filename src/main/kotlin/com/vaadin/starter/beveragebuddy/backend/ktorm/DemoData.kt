@@ -1,5 +1,6 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
+import com.github.mvysny.ktormvaadin.db
 import java.time.LocalDate
 import kotlin.random.Random
 

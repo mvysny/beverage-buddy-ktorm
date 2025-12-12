@@ -1,14 +1,14 @@
 package com.vaadin.starter.beveragebuddy.ui
 
 import com.github.mvysny.kaributesting.v10.*
+import com.github.mvysny.ktormvaadin.create
+import com.github.mvysny.ktormvaadin.db
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.categories
-import com.vaadin.starter.beveragebuddy.backend.ktorm.create
-import com.vaadin.starter.beveragebuddy.backend.ktorm.db
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
 import org.junit.jupiter.api.Test
 import org.ktorm.entity.single

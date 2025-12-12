@@ -1,6 +1,8 @@
 package com.vaadin.starter.beveragebuddy.ui
 
 import com.github.mvysny.kaributesting.v10.*
+import com.github.mvysny.ktormvaadin.findAll
+import com.github.mvysny.ktormvaadin.single
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
@@ -9,9 +11,6 @@ import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
-import com.vaadin.starter.beveragebuddy.backend.ktorm.create
-import com.vaadin.starter.beveragebuddy.backend.ktorm.findAll
-import com.vaadin.starter.beveragebuddy.backend.ktorm.single
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
 import org.junit.jupiter.api.Test
 import kotlin.test.expect
@@ -57,7 +56,7 @@ class ReviewEditorDialogTest : AbstractAppTest() {
 
     @Test
     fun `create new review`() {
-        val cat = Categories.create(Category { name = "Beers" })
+        val cat = Category { name = "Beers" } .create()
 
         _get<Button> { text = "New review (Alt+N)" }._click()
 

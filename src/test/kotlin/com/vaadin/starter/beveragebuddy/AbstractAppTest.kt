@@ -2,9 +2,9 @@ package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributesting.v10.MockVaadin
 import com.github.mvysny.kaributesting.v10.Routes
+import com.github.mvysny.ktormvaadin.deleteAll
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
-import com.vaadin.starter.beveragebuddy.backend.ktorm.deleteAll
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll

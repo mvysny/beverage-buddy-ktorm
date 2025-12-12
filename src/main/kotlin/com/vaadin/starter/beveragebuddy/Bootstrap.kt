@@ -1,6 +1,7 @@
 package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
+import com.github.mvysny.ktormvaadin.ActiveKtorm
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.page.AppShellConfigurator
@@ -11,7 +12,6 @@ import com.vaadin.flow.server.VaadinServiceInitListener
 import com.vaadin.flow.server.VaadinSession
 import com.vaadin.flow.theme.Theme
 import com.vaadin.starter.beveragebuddy.backend.ktorm.DemoData
-import com.vaadin.starter.beveragebuddy.backend.ktorm.SimpleKtorm
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.flywaydb.core.Flyway
@@ -46,7 +46,7 @@ class Bootstrap: ServletContextListener {
             password = ""
         }
         dataSource = HikariDataSource(cfg)
-        SimpleKtorm.database = Database.connect(dataSource)
+        ActiveKtorm.database = Database.connect(dataSource)
 
         // Makes sure the database is up-to-date
         log.info("Running DB migrations")

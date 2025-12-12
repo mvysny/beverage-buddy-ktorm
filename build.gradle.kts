@@ -37,8 +37,7 @@ dependencies {
     implementation(libs.karibu.dsl)
     implementation(libs.vaadin.boot)
 
-    implementation(libs.ktorm.core)
-    implementation(libs.ktorm.postgresql)
+    implementation(libs.ktorm.vaadin)
     implementation(libs.hikaricp)
     implementation(libs.hibernate.validator)
 

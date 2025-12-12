@@ -1,6 +1,8 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
 import com.github.mvysny.kaributesting.v10.expectList
+import com.github.mvysny.ktormvaadin.findAll
+import com.github.mvysny.ktormvaadin.single
 import com.vaadin.starter.beveragebuddy.AbstractAppTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

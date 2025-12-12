@@ -1,5 +1,6 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
+import com.github.mvysny.ktormvaadin.QueryDataProvider
 import org.ktorm.dsl.*
 import org.ktorm.schema.VarcharSqlType
 import org.ktorm.support.postgresql.ilike
@@ -24,8 +25,8 @@ data class ReviewWithCategory(
         val dataProvider: QueryDataProvider<ReviewWithCategory>
             // we need to use SQL alias here, since both r.name and c.name exist and H2 would complain of a name clash.
             get() = QueryDataProvider(
-                { it.from(Reviews).leftJoin(Categories, on = Reviews.category eq Categories.id) },
-                { it.select(*Reviews.columns.toTypedArray(), Categories.name)},
+                { it.from(Reviews).leftJoin(Categories, on = Reviews.category eq Categories.id)
+                    .select(*Reviews.columns.toTypedArray(), Categories.name)},
                 { from(it) })
     }
 }

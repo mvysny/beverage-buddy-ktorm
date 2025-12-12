@@ -1,6 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend.ktorm
 
 import com.github.mvysny.kaributesting.v10.expectList
+import com.github.mvysny.ktormvaadin.q
 import com.vaadin.flow.data.provider.Query
 import com.vaadin.flow.data.provider.QuerySortOrder
 import com.vaadin.flow.data.provider.SortDirection
@@ -31,7 +32,7 @@ class ReviewWithCategoryTest : AbstractAppTest() {
         val query = Query<ReviewWithCategory, ColumnDeclaring<Boolean>>(
             0,
             30,
-            listOf(QuerySortOrder(Reviews.name.name, SortDirection.ASCENDING)),
+            listOf(QuerySortOrder(Reviews.name.q.key, SortDirection.ASCENDING)),
             null,
             null
         )

@@ -1,13 +1,13 @@
 package com.vaadin.starter.beveragebuddy.backend
 
 import com.fatboyindustrial.gsonjavatime.Converters
+import com.github.mvysny.ktormvaadin.findAll
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Categories
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Category
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Reviews
 import com.vaadin.starter.beveragebuddy.backend.ktorm.Review
-import com.vaadin.starter.beveragebuddy.backend.ktorm.findAll
 import io.javalin.Javalin
 import io.javalin.json.JavalinGson
 import jakarta.servlet.annotation.WebServlet
