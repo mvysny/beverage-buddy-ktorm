@@ -39,7 +39,6 @@ dependencies {
 
     implementation(libs.ktorm.vaadin)
     implementation(libs.hikaricp)
-    implementation(libs.hibernate.validator)
 
     // logging
     // currently we are logging through the SLF4J API to SLF4J-Simple. See src/main/resources/simplelogger.properties file for the logger configuration
