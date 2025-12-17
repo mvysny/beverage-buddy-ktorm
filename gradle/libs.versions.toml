@@ -7,7 +7,7 @@ ktor = "3.3.3"
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-vaadin-boot = "com.github.mvysny.vaadin-boot:vaadin-boot:13.4"
+vaadin-boot = "com.github.mvysny.vaadin-boot:vaadin-boot:13.5"
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.4.3"
 karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.5.0"
@@ -16,16 +16,19 @@ h2 = "com.h2database:h2:2.2.224"
 hikaricp = "com.zaxxer:HikariCP:7.0.2"
 ktorm-vaadin = "com.github.mvysny.ktorm-vaadin:ktorm-vaadin:0.1"
 junit = "org.junit.jupiter:junit-jupiter-engine:6.0.1"
-gson-gson = "com.google.code.gson:gson:2.13.2"   # com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
+# com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
+gson-gson = "com.google.code.gson:gson:2.13.2"
 gson-javatime = "com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2"
 # Javalin 6 doesn't support Jetty 12; upgrade only after Javalin 7 is released.
-javalin = "io.javalin:javalin:5.6.3"   # io.javalin:javalin; https://repo1.maven.org/maven2/io/javalin/javalin/
-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor"}
-ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor"}
+# io.javalin:javalin; https://repo1.maven.org/maven2/io/javalin/javalin/
+javalin = "io.javalin:javalin:5.6.3"
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }
 
 [bundles]
-gson = ["gson-gson", "gson-javatime"]   # workaround for https://github.com/google/gson/issues/1059
+# workaround for https://github.com/google/gson/issues/1059
+gson = ["gson-gson", "gson-javatime"]
 ktor = ["ktor-client-core", "ktor-client-java"]
