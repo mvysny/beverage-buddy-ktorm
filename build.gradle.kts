@@ -29,10 +29,9 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     // Vaadin
-    implementation(libs.vaadin.core) {
-        if (vaadin.effective.productionMode.get()) {
-            exclude(module = "vaadin-dev")
-        }
+    implementation(libs.vaadin.core)
+    if (!vaadin.effective.productionMode.get()) {
+        implementation(libs.vaadin.dev)
     }
     implementation(libs.karibu.dsl)
     implementation(libs.vaadin.boot)
