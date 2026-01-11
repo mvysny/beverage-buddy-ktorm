@@ -2,6 +2,7 @@ package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
 import com.github.mvysny.ktormvaadin.ActiveKtorm
+import com.vaadin.flow.component.dependency.StyleSheet
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.page.AppShellConfigurator
@@ -11,6 +12,7 @@ import com.vaadin.flow.server.ServiceInitEvent
 import com.vaadin.flow.server.VaadinServiceInitListener
 import com.vaadin.flow.server.VaadinSession
 import com.vaadin.flow.theme.Theme
+import com.vaadin.flow.theme.lumo.Lumo
 import com.vaadin.starter.beveragebuddy.backend.ktorm.DemoData
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -103,6 +105,7 @@ class MyServiceInitListener : VaadinServiceInitListener {
 }
 
 @BodySize(width = "100vw", height = "100vh")
-@Theme("my-theme")
+@StyleSheet(Lumo.STYLESHEET)
+@StyleSheet("styles.css")
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
 class AppShell: AppShellConfigurator
