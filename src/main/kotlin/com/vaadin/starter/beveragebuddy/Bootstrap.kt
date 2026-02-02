@@ -42,7 +42,7 @@ class Bootstrap: ServletContextListener {
         // 1. fill in the proper JDBC URL here
         // 2. make sure to include the database driver into the classpath, by adding a dependency on the driver into the build.gradle file.
         val cfg = HikariConfig().apply {
-            driverClassName = Driver::class.java.name
+            driverClassName = "org.h2.Driver"
             jdbcUrl = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
             username = "sa"
             password = ""
