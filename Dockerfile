@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # Allows you to run this app easily as a docker container.
 # See README.md for more details.
 #
@@ -7,10 +8,12 @@
 # Uses Docker Multi-stage builds: https://docs.docker.com/build/building/multi-stage/
 
 # The "Build" stage. Copies the entire project into the container, into the /app/ folder, and builds it.
-FROM eclipse-temurin:21 AS BUILD
+FROM eclipse-temurin:21 AS build
 COPY . /app/
 WORKDIR /app/
-RUN ./gradlew clean build -Pvaadin.productionMode --no-daemon --no-watch-fs
+RUN --mount=type=cache,target=/root/.gradle,sharing=locked \
+    --mount=type=cache,target=/root/.vaadin,sharing=locked \
+    ./gradlew clean build -Pvaadin.productionMode --no-daemon --no-watch-fs
 WORKDIR /app/build/distributions/
 RUN ls -la
 RUN tar xvf app.tar
@@ -19,7 +22,7 @@ RUN tar xvf app.tar
 
 # The "Run" stage. Start with a clean image, and copy over just the app itself, omitting gradle, npm and any intermediate build files.
 FROM eclipse-temurin:21
-COPY --from=BUILD /app/build/distributions/app /app/
+COPY --from=build /app/build/distributions/app /app/
 WORKDIR /app/bin
 EXPOSE 8080
-ENTRYPOINT ./app
+ENTRYPOINT ["./app"]
