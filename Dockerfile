@@ -10,7 +10,7 @@
 FROM eclipse-temurin:21 AS BUILD
 COPY . /app/
 WORKDIR /app/
-RUN ./gradlew clean build -Pvaadin.productionMode --no-daemon --info --stacktrace
+RUN ./gradlew clean build -Pvaadin.productionMode --no-daemon --no-watch-fs
 WORKDIR /app/build/distributions/
 RUN ls -la
 RUN tar xvf app.tar
