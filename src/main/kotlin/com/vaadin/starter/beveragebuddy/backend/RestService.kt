@@ -26,9 +26,10 @@ private fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
  */
 @WebServlet(urlPatterns = ["/rest/*"], name = "JavalinRestServlet", asyncSupported = false)
 class JavalinRestServlet : HttpServlet() {
-    val javalin = Javalin.createStandalone { it.jsonMapper(JavalinGson(gson)) } .apply {
-        get("/rest/categories") { ctx -> ctx.json(Categories.findAll().map { RestCategory.of(it) }) }
-        get("/rest/reviews") { ctx -> ctx.json(Reviews.findAll().map { RestReview.of(it) }) }
+    val javalin = Javalin.create { config ->
+        config.jsonMapper(JavalinGson(gson))
+        config.routes.get("/rest/categories") { ctx -> ctx.json(Categories.findAll().map { RestCategory.of(it) }) }
+        config.routes.get("/rest/reviews") { ctx -> ctx.json(Reviews.findAll().map { RestReview.of(it) }) }
     }.javalinServlet()
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {

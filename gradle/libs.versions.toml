@@ -1,28 +1,27 @@
 [versions]
 vaadin = "25.1.5"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
-slf4j = "2.0.17"
-ktor = "3.3.3"
+slf4j = "2.0.18"
+ktor = "3.4.3"
 
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-vaadin-boot = "com.github.mvysny.vaadin-boot:vaadin-boot:13.6"
+vaadin-boot = "com.github.mvysny.vaadin-boot:vaadin-boot:13.7"
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 vaadin-dev = { module = "com.vaadin:vaadin-dev", version.ref = "vaadin" }
 karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.7.0"
 karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.6.0"
-flyway = "org.flywaydb:flyway-core:12.1.1"
+flyway = "org.flywaydb:flyway-core:12.6.1"
 h2 = "com.h2database:h2:2.4.240"
 hikaricp = "com.zaxxer:HikariCP:7.0.2"
-ktorm-vaadin = "com.github.mvysny.ktorm-vaadin:ktorm-vaadin:0.1"
-junit = "org.junit.jupiter:junit-jupiter-engine:6.0.1"
+ktorm-vaadin = "com.github.mvysny.ktorm-vaadin:ktorm-vaadin:0.2"
+junit = "org.junit.jupiter:junit-jupiter-engine:6.0.3"
 # com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
-gson-gson = "com.google.code.gson:gson:2.13.2"
+gson-gson = "com.google.code.gson:gson:2.14.0"
 gson-javatime = "com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2"
-# Javalin 6 doesn't support Jetty 12; upgrade only after Javalin 7 is released.
 # io.javalin:javalin; https://repo1.maven.org/maven2/io/javalin/javalin/
-javalin = "io.javalin:javalin:5.6.3"
+javalin = "io.javalin:javalin:7.2.0"
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 
